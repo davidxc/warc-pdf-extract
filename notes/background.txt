@@ -1,0 +1,36 @@
+
+### Reading / References
+
+Arxiv's recent experimentation with PDF extraction:
+https://blogs.cornell.edu/arxiv/2017/09/27/development-update-reference-extraction-linking/
+
+Google Scholar tech notes:
+https://scholar.google.com/intl/en/scholar/inclusion.html#crawl
+https://scholar.google.com/intl/en/scholar/inclusion.html#indexing
+
+
+### General Extractors
+
+- ScienceParse: https://github.com/allenai/science-parse
+- GROBID: https://github.com/kermitt2/grobid
+    => actually pretty fast
+    => automatically talks to crossref (!)
+    => docker support
+x CERMINE
+- ParsCit
+
+### Quick and Dirty Extractors
+
+x Referencer (GNOME): DOI or arxiv only
+x zotero
+    just uses google scholar, short-circuiting with JSTOR
+    https://zotero-manual.github.io/zotero-manual/adding-items#how-retrieve-metadata-work
+x calibre?
+x pdfx
+    => meh.
+x RefExtract
+    => very reference-oriented
+
+### Proprietary
+
+- Mendeley

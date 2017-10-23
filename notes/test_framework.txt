@@ -1,0 +1,13 @@
+
+### Test Framework
+
+1000 random already-identified PDF documents
+    => segment by JSTOR (OCR), born-digital, etc
+
+Workflow:
+    => collect papers and crossref metadata
+
+Test:
+    => title and author-last-name numbers
+    => DOI match against elasticsearch (w/ crossref data), using title search
+       and then author list compare
