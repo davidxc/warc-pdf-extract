@@ -8,6 +8,8 @@ Google Scholar tech notes:
 https://scholar.google.com/intl/en/scholar/inclusion.html#crawl
 https://scholar.google.com/intl/en/scholar/inclusion.html#indexing
 
+Docear’s PDF Inspector: Title Extraction from PDF files
+https://pdfs.semanticscholar.org/753d/9c1d2c1f7e4fb7e474236f9409d2e2590142.pdf
 
 ### General Extractors
 
@@ -16,8 +18,11 @@ https://scholar.google.com/intl/en/scholar/inclusion.html#indexing
     => actually pretty fast
     => automatically talks to crossref (!)
     => docker support
-x CERMINE
-- ParsCit
+- CERMINE
+x ParsCit
+    => only works on text; has poor reputation
+x biblicit
+    => based on ParsCit, explicitly recommends GROBID
 
 ### Quick and Dirty Extractors
 
@@ -30,6 +35,8 @@ x pdfx
     => meh.
 x RefExtract
     => very reference-oriented
+- docear
+    uses font size to identify title
 
 ### Proprietary
 
