@@ -1,0 +1,60 @@
+
+### GROBID
+
+Docs: http://grobid.readthedocs.io/en/latest/Grobid-docker/
+
+Download:
+    wget https://github.com/kermitt2/grobid/archive/grobid-parent-0.4.4.zip
+    unzip grobid-grobid-parent-0.4.4.zip
+    cd grobid-grobid-parent-0.4.4
+    mvn clean install
+    # need to run at least once locally to create config files?
+
+Docker way:
+
+    docker pull lfoppiano/grobid:0.4.2
+    docker run -t --rm -p 8080:8080 lfoppiano/grobid:0.4.2
+    # http://localhost:8080
+
+Batch way:
+
+    java -Xmx4G -jar grobid-core/target/grobid-core-0.4.2.one-jar.jar -gH ../grobid-home -dIn /path/to/input/directory -dOut /path/to/output/directory -r -exe processHeader 
+
+Resource consumption:
+    Loads some files at boot.
+    Seems to use many threads, but only 1 core (on my laptop); averaging
+    around 15% of 4 cores (2 physical). Up to 5 GB RAM or so (6 allowed).
+    Spike-y resource consumption. ~zero paging.
+
+### CERMINE
+
+Download:
+    http://maven.ceon.pl/artifactory/webapp/#/artifacts/browse/simple/General/kdd-releases/pl/edu/icm/cermine/cermine-impl/1.13/cermine-impl-1.13-jar-with-dependencies.jar
+
+Batch way:
+    java -cp cermine-impl-<VERSION>-jar-with-dependencies.jar pl.edu.icm.cermine.ContentExtractor -path path/to/directory/with/pdfs/ -outputs jats
+
+Resource consumption:
+    Utilizes 2x (out of 4 on my laptop, 2 physical) cores fully.
+
+### science-parse
+
+Download:
+    git clone https://github.com/allenai/science-parse
+    git checkout v1.3.0
+
+Compile (after installing scala and sbt):
+    sudo apt install openjfx
+    sbt cli/assembly
+
+Docker way:
+    docker run -p 8080:8080 --rm allenai-docker-public-docker.bintray.io/s2/scienceparse:1.2.8-SNAPSHOT
+
+Batch way:
+    java -Xmx6g -jar jarfile.jar dir/with/pdf -o dir/with/json/out
+
+Resource consumption:
+    Loads some files at boot.
+    Pretty heavy paging on my (8GB RAM) laptop, even with Slack closed. CPU
+    well over 90 percent on all cores.
+
