@@ -126,6 +126,11 @@ Testing was on bnewbold's laptop, which was "lightly" in use turing testing:
 - 8 GB RAM
 - fast SSD
 
+The "1000 file" corpus took up 811 MB on disk. The Science Parse JSON output
+(including fulltext) was 51 MB, and compressed (gzip) to 15 MB. Scaling those
+numbers up, 100 million papers of fulltext and metadata would be around 5.1 TB,
+or 1.5 TB compressed. All published papers on a single hard disk!
+
 ## Methodology
 
 Started with a 1000 file list. 2 files failed to download at all, and another
