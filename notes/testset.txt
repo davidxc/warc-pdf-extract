@@ -1,0 +1,11 @@
+
+These are partial/messy notes of how I generated and downloaded the test
+dataset.
+
+    shuf /fast/metadump/work/oadoi_warcsum_ident.tsv | rg -v da39a3ee5e6b4b0d3255bfef95601890afd80709 |  head -n1000 > /fast/rand_1k_oadoi_warcsum_ident.tsv
+    shuf /fast/metadump/work/warcsum_application_pdf_scimag_20170512_identifiers.tsv | head -n1000 > /fast/rand_1k_warcsum_scimag.tsv 
+    cut -f2 rand_1k_warcsum_scimag.tsv | sort | join - /fast/metadump/manifest/urls.tsv > rand_1k_warcsum_scimag_urls.tsv
+
+    cut -f4 -d' ' 1k_random_identified_pdfs.txt | sort | join -t$'\t' - /fast/metadump/biblio/works_crossref.tsv > 1k_random_identified_biblio.tsv
+
+    cat 1k_random_identified_pdfs.tsv | awk -F '\t' '{print $4 "\t" $1}' | sort | join -t$'\t' 1k_random_identified_biblio.tsv - > 1k_random_identified_combined.tsv
