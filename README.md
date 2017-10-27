@@ -3,6 +3,8 @@ This repo contains research, tools, and pipeline stuff for extracting metadata
 from scholarly publication PDFs (eg, title, author) and matching against 
 databases of bibliographic identifiers.
 
+See `./notes/comparison_summary.md` for summary and conclusions.
+
 ### Big Picture
 
 Want to identify our tens of millions of crawled papers to identifiers
