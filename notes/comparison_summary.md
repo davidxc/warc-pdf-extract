@@ -1,5 +1,6 @@
 ---
 confluence-page-title: "PDF Metadata Extraction Tooling"
+confluence-page-id: 199720961
 ...
 
 Motivation is to select a PDF parsing and metadata extraction tool to run over
@@ -18,35 +19,42 @@ Based on parsing approximately 1000 previously-identified PDFs, and measuring
 success in matching against the "known-good" metadata from Crossref...
 
 <table>
-  <tr><th>Tool
-      <th>Max CPU (of 400%)
-      <th>Max RAM
-      <th>CPU Sec/file
-      <th>Anything frac
-      <th>Token Match frac
-      <th>Fuzzy Match frac
-      <th>DOI Match frac
-  <tr><td>CERMINE
-      <td>106%
-      <td>2.8 GB
-      <td>7.8
-      <td>72.3%
-      <td>76.3%
-      <td>34.3% (4.3% false)
-  <tr><td>GROBID
-      <td>56%
-      <td>4.9 GB
-      <td>0.26
-      <td>77.3%
-      <td>81.2%
-      <td>40.0% (4.7% false)
-  <tr><td>Science Parse
-      <td>335%
-      <td>6.8 GB
-      <td>1.2
-      <td>75.5%
-      <td>85.1%
-      <td>N/A
+ <tr>
+  <th>Tool</th>
+  <th>Max CPU (of 400%)</th>
+  <th>Max RAM</th>
+  <th>CPU Sec/file</th>
+  <th>Token Match frac</th>
+  <th>Fuzzy Match frac</th>
+  <th>DOI Match frac</th>
+ </tr>
+ <tr>
+  <td>CERMINE</td>
+  <td>106%</td>
+  <td>2.8 GB</td>
+  <td>7.8</td>
+  <td>72.3%</td>
+  <td>76.3%</td>
+  <td>34.3% (4.3% false)</td>
+ </tr>
+ <tr>
+  <td>GROBID</td>
+  <td>56%</td>
+  <td>4.9 GB</td>
+  <td>0.26</td>
+  <td>77.3%</td>
+  <td>81.2%</td>
+  <td>40.0% (4.7% false)</td>
+ </tr>
+ <tr>
+  <td>Science Parse</td>
+  <td>335%</td>
+  <td>6.8 GB</td>
+  <td>1.2</td>
+  <td>75.5%</td>
+  <td>85.1%</td>
+  <td>N/A</td>
+ </tr>
 </table>
 
 Note that GROBID does *not* extract fulltext, references, etc by default, while
@@ -110,6 +118,13 @@ down. As an order of magnitude estimate though, if we need 1 sec/file, 100
 million PDFs could be processed by a 12 node cluster (72 cores total) in about
 two weeks. That would cost ~$2000 on AWS, or ~$1000 on DigitalOcean; presumably
 our operating costs are even lower. Great!
+
+Testing was on bnewbold's laptop, which was "lightly" in use turing testing:
+
+- Thinkpad X1
+- CPU: 2.9 GHz i5-5300U, "4" cores, 2 physical
+- 8 GB RAM
+- fast SSD
 
 ## Methodology
 
