@@ -111,6 +111,7 @@ def main():
 
     if not os.path.isdir(outdir):
         print("{} doesn't look like a directory".format(outdir))
+        return
 
     minsize = args.min_size and int(args.min_size)
     maxsize = args.max_size and int(args.max_size)

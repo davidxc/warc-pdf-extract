@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+This is a very simple/minimalist GROBID TEI XML parser; only grabs a small
+subset of header metadata.
+"""
+
 import sys
 import json
 import xml.etree.ElementTree as ET
