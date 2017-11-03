@@ -1,0 +1,1491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 /home/bnewbold/src/grobid/grobid-grobid-parent-0.4.4/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<encodingDesc>
+			<appInfo>
+				<application version="0.4.5-dummy" ident="GROBID" when="2017-11-02T23:30+0000">
+					<ref target="https://github.com/kermitt2/grobid">GROBID - A machine learning software for extracting information from scholarly documents</ref>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Exact and stable recovery of rotations for robust synchronization</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>Oxford University Press (OUP)</publisher>
+				<availability status="unknown"><p>Copyright Oxford University Press (OUP)</p>
+				</availability>
+				<date type="published" when="2013">2013</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">L</forename><surname>Wang</surname></persName>
+						</author>
+						<author>
+							<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+						</author>
+						<title level="a" type="main">Exact and stable recovery of rotations for robust synchronization</title>
+					</analytic>
+					<monogr>
+						<title level="j" type="main">Information and Inference</title>
+						<title level="j" type="abbrev">Information and Inference</title>
+						<idno type="ISSN">2049-8764</idno>
+						<idno type="eISSN">2049-8772</idno>
+						<imprint>
+							<publisher>Oxford University Press (OUP)</publisher>
+							<biblScope unit="volume">2</biblScope>
+							<biblScope unit="issue">2</biblScope>
+							<biblScope unit="page" from="145" to="193"/>
+							<date type="published" when="2013">2013</date>
+						</imprint>
+					</monogr>
+					<idno type="DOI">10.1093/imaiai/iat005</idno>
+					<note type="submission">Received on 10 November 2012; revised on 15 July 2013; accepted on 16 July 2013]</note>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>synchronization of rotations</term>
+					<term>least unsquared deviation</term>
+					<term>semidefinite relaxation</term>
+					<term>alternating direction method</term>
+				</keywords>
+			</textClass>
+			<abstract>
+				<p>The synchronization problem over the special orthogonal group SO(d) consists of estimating a set of unknown rotations R 1 , R 2 ,. .. , R n from noisy measurements of a subset of their pairwise ratios R −1 i R j. The problem has found applications in computer vision, computer graphics and sensor network local-ization, among others. Its least squares solution can be approximated by either spectral relaxation or semidefinite programming followed by a rounding procedure, analogous to the approximation algorithms of Max-Cut. The contribution of this paper is threefold: first, we introduce a robust penalty function involving the sum of unsquared deviations and derive a relaxation that leads to a convex optimization problem; secondly, we apply the alternating direction method to minimize the penalty function. Finally, under a specific model of the measurement noise and for both complete and random measurement graphs, we prove that the rotations are exactly and stably recovered, exhibiting a phase transition behavior in terms of the proportion of noisy measurements. Numerical simulations confirm the phase transition behavior for our method as well as its improved accuracy compared with existing methods.</p>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>The synchronization problem over the special orthogonal group SO(d) of rotations in R d SO(d) = {R ∈ R d×d : R R = RR = I d , det R = 1}</p><p>(1.1)</p><p>consists of estimating a set of n rotations R 1 , . . . , R n ∈ SO(d) from a subset of (perhaps noisy) measure- ments R ij of their ratios R −1 i R j . The subset of available ratio measurements is viewed as the edge set of an undirected graph G = (V , E ), with |V | = n. The goal is to find R 1 , . . . , R n that satisfy</p><formula xml:id="formula_0">R −1 i R j ≈ R ij for (i, j) ∈ E . (1.2)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>146</head><p>LANHUI WANG AND AMIT SINGER Synchronization over the rotation group SO(d) has many applications. Synchronization over SO(2) plays a major role in the framework of angular embedding for ranking and for image reconstruction from pairwise intensity differences <ref type="bibr" target="#b43">[43,</ref><ref type="bibr" target="#b44">44]</ref> and for a certain algorithm for sensor network localization <ref type="bibr" target="#b8">[9]</ref>. Synchronization over SO(3) is invoked by many algorithms for structure from motion in com- puter vision <ref type="bibr" target="#b2">[3,</ref><ref type="bibr" target="#b16">16,</ref><ref type="bibr" target="#b22">22,</ref><ref type="bibr" target="#b40">40]</ref>, by algorithms for global alignment of three-dimensional scans in computer graphics <ref type="bibr" target="#b41">[41]</ref>, and by algorithms for finding three-dimensional structures of molecules using NMR spectroscopy <ref type="bibr" target="#b9">[10]</ref> and cryo-electron microscopy <ref type="bibr" target="#b30">[30,</ref><ref type="bibr" target="#b34">34]</ref>. A closely related problem in terms of appli- cations and methods is the synchronization over the orthogonal group O(d), where the requirement of positive determinant in (1.1) is alleviated. We remark that the algorithms and analysis presented in this paper follow seamlessly to the case of O(d). We choose to focus on SO(d) only because this group is encountered more often in applications.</p><p>If the measurements R ij are noiseless and the graph G is connected, then the synchronization prob- lem can be easily solved by considering a spanning tree in G , setting the rotation of the root node arbitrarily, and determining all other rotations by traversing the tree while sequentially multiplying the rotation ratios. The rotations obtained in this manner are uniquely determined up to a global rotation, which is the intrinsic degree of freedom of the synchronization problem. However, when the ratio mea- surements are corrupted by noise, the spanning tree method suffers from an accumulation of errors. Esti- mation methods that use all available ratio measurements and exploit the redundancy of graph cycles are expected to perform better.</p><p>If some (though possibly not all) pairwise measurements are noise-free, then a cycle-based algorithm can be used to find the noise-free ratio measurements. Specifically, in order to determine if a ratio measurement is 'good' (noise-free) or 'bad' (corrupted by random noise), one can examine cycles in the graph that include that edge and check their consistency. A consistent cycle is a cycle for which sequentially multiplying the rotation ratios along the cycle results in the identity rotation. Under the ran- dom noise assumption, ratio measurements along consistent cycles are almost surely 'good', and if the subgraph associated with the 'good' measurements is connected, then the spanning tree method can be used to determine the rotations. However, cycle-based algorithms have two main weaknesses. First, the computational complexity of cycle-based algorithms increases exponentially with the cycle length. Sec- ondly, the cycle-based algorithms are unstable to small perturbations on the 'good' ratio measurements.</p><p>Methods that are based on least squares have been proposed and analyzed in the literature. While the resulting problem is non-convex, the solution to the least squares problem is approximated by either a spectral relaxation (i.e. using leading eigenvectors) or by semidefinite programming (SDP) (see, e.g. <ref type="bibr" target="#b3">[4,</ref><ref type="bibr" target="#b19">19,</ref><ref type="bibr" target="#b31">31,</ref><ref type="bibr" target="#b43">43]</ref>). Typically in applications, the ratio measurements generally consist of noisy inliers, which are explained well by the rotations R 1 , . . . , R n , along with outliers, that have no structure. The least squares method is sensitive to these outliers.</p><p>In this paper, we propose to estimate the rotations by minimizing a different, more robust self- consistency error, which is the sum of unsquared residuals <ref type="bibr" target="#b20">[20,</ref><ref type="bibr" target="#b27">27,</ref><ref type="bibr" target="#b37">37]</ref>, rather than the sum of squared residuals. The minimization problem is semidefinite relaxed and solved by the alternating direction method (ADM). Moreover, we prove that under some conditions the rotations R 1 , . . . , R n can be exactly and stably recovered (up to a global rotation); see Theorems 4.1, 5.1 and 5.2 for the complete graph, and Theorems 6.1-6.3 for random graphs. Our numerical experiments demonstrate that the new method significantly improves the estimation of rotations, and in particular, helps in achieving state-of-the-art results.</p><p>The paper is organized as follows: In Section 2, we review existing SDP and spectral relaxation methods for approximating the least squares solution. In Section 3, we derive the more robust least unsquared deviation (LUD) cost function and its convex relaxation. In Section 4, we introduce the noise model and prove conditions for exact recovery by the LUD method. In Section 5, we prove that the recovery of the rotations is stable to noise. In Section 6, we generalize the results to the case of random (incomplete) measurement graphs. In Section 7, we discuss the application of the ADM for solving the LUD optimization problem. The results of numerical experiments on both synthetic data as well as for global alignment of three-dimensional scans are reported in Section 8. Finally, Section 9 is a summary.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Approximating the least squares solution</head><p>In this section, we overview existing relaxation methods that attempt to approximate the least squares solution. The least squares solution to synchronization is the set of rotations R 1 , . . . , R n in SO(d) that minimize the sum of squared deviations min R 1 ,...,R n ∈SO(d)</p><formula xml:id="formula_1">(i,j)∈E w ij R −1 i R j − R ij 2 , (2.1)</formula><p>where · · denotes the Frobenius norm, 1 w ij are non-negative weights that reflect the measurement precisions <ref type="bibr" target="#b1">2</ref> and R ij are the noisy measurements. The feasible set SO(d) n = SO(d) × · · · × SO(d) of the minimization problem (2.1) is, however, non-convex. Convex relaxations of (2.1) involving SDP and spectral methods have been previously proposed and analyzed.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.1">SDP relaxation</head><p>Convex relaxation using SDP was introduced in <ref type="bibr" target="#b31">[31]</ref> for SO(2) and in <ref type="bibr" target="#b2">[3]</ref> for SO(3) and is easily generalized for any d. The method draws similarities with the Goemans and Williamson approximation algorithm to Max-Cut that uses SDP <ref type="bibr" target="#b15">[15]</ref>. The first step of the relaxation involves the observation that the least squares problem (2.1) is equiv- alent to the maximization problem max R 1 ,...,R n ∈SO(d) (i,j)∈E w ij Tr(R −1 i R j R ij ), (2.2) due to the fact that R −1 i R j 2 = =R ij 2 = d. The second step of the relaxation introduces the matrix G of size n × n whose entries</p><formula xml:id="formula_2">G ij = R i R j (2.3)</formula><p>are themselves matrices of size d × d, so that the overall size of G is nd × nd. The matrix G admits the decomposition</p><formula xml:id="formula_3">G = R R, (2.4)</formula><p>where R is a matrix of size d × nd given by</p><formula xml:id="formula_4">R = [R 1 R 2 · · · R n ]. (2.5)</formula><p>The objective function in (2.2) can be written as Tr(GC), where the entries of C are given by C ij = w ij R ij (note that C is symmetric, since R ij = R ji and w ij = w ji ). The matrix G has the following properties:</p><p>1. G 0, i.e. it is positive semidefinite (PSD); <ref type="bibr" target="#b0">1</ref> The Frobenius norm of an m × n matrix A is defined as A = m i=1 n j=1 A 2 ij . <ref type="bibr" target="#b1">2</ref> If all measurements have the same precision, then the weights take the simple form w ij = 1 for (i, j) ∈ E , and w ij = 0 other- wise.</p><formula xml:id="formula_5">(LQ) i = U i Σ i V i , J = I d−1 0 0 det U i V i , ˆ R i = U i JV i (2.7)</formula><p>(the only difference for synchronization over O(d) is thatˆRthatˆ thatˆR i = U i V i , excluding any usage of J). In the deterministic procedure, the top d eigenvectors v 1 , . . . , v d ∈ R nd of G corresponding to its d largest eigenvalues are computed. A matrix T of size nd × d whose columns are the eigenvectors is then formed, i.e.</p><formula xml:id="formula_6">T = [v 1 · · · v d ].</formula><p>As before, the matrix T is viewed as n matrices of size d × d, denoted by T 1 , . . . , T n and the SVD procedure detailed in (2.7) is applied to each T i (instead of (GQ) i ) to obtain R i .</p><p>We remark that the least squares formulation (2.1) for synchronization of rotations is an instance of quadratic optimization problems under orthogonality constraints (Qp-Oc) <ref type="bibr" target="#b26">[26,</ref><ref type="bibr" target="#b35">35]</ref>. Other applications of Qp-Oc are the generalized orthogonal Procrustes problem and the quadratic assignment problem. Different semidefinite relaxations (SDRs) for the Procrustes problem have been suggested in the liter- ature <ref type="bibr" target="#b25">[25,</ref><ref type="bibr" target="#b26">26,</ref><ref type="bibr" target="#b35">35]</ref>. In <ref type="bibr" target="#b26">[26]</ref>, for the problem (2.2), the orthogonal constraints R i R i = I d can be relaxed to R i 1, and the resulting problem can be converted to a semidefinite program with one semidefinite constraint for a matrix of size nd 2 × nd 2 , 2n semidefinite constraints from matrices of size d × d (see <ref type="bibr">(55)</ref> in <ref type="bibr" target="#b26">[26]</ref>) and some linear constraints. Thus, compared with that relaxation, the one we use in (2.6) has a lower complexity, since the problem (2.6) has size nd × nd. As for the approximation ratio of the relaxation, if C is PSD (as in the case of the Procrustes problem), then there is a constant approximation ratio for the relaxation (2.6) for the groups O(1) and SO(2) <ref type="bibr" target="#b36">[36]</ref>. When the matrix C is not PSD, an approximation algorithm with ratio Ω(1/ log n) is given in <ref type="bibr" target="#b36">[36]</ref> for the cases over O(1) and SO(2).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>149</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.2">Spectral relaxations</head><p>Spectral relaxations for approximating the least squares solution have been previously considered in <ref type="bibr" target="#b3">[4,</ref><ref type="bibr" target="#b8">9,</ref><ref type="bibr" target="#b19">19,</ref><ref type="bibr" target="#b22">22,</ref><ref type="bibr" target="#b31">31,</ref><ref type="bibr" target="#b41">41,</ref><ref type="bibr" target="#b43">43,</ref><ref type="bibr" target="#b44">44]</ref>. All methods are based on eigenvectors of the graph connection Laplacian (a notion that was introduced in <ref type="bibr" target="#b33">[33]</ref>) or one of its normalizations. The graph connection Lapla- cian, denoted by L 1 is constructed as follows: define the symmetric matrix W 1 ∈ R nd×nd such that the</p><formula xml:id="formula_7">(i, j)th d × d block is given by (W 1 ) ij = w ij R ij . Also, let D 1 ∈ R nd×nd be a diagonal matrix such that (D 1 ) ii = d i I d , where d i = j w ij . The graph connection Laplacian L 1 is defined as L 1 = D 1 − W 1 .</formula><p>(2.8)</p><p>It can be verified that L 1 is PSD, and that in the noiseless case L 1 R = 0. The least d eigenvectors of L 1 corresponding to its smallest eigenvalues, followed by the SVD procedure for rounding (2.7) can be used to recover the rotations. A slightly modified procedure that uses the eigenvectors of the normalized graph connection Laplacian</p><formula xml:id="formula_8">L 1 = D −1/2 1 L 1 D −1/2 1 = I nd − D −1/2 1 W 1 D −1/2 1 (2.9)</formula><p>is analyzed in <ref type="bibr" target="#b3">[4]</ref>. Specifically, [4, Theorem 10] bounds the least squares cost (2.1) incurred by this approximate solution from above and below in terms of the eigenvalues of the normalized graph con- nection Laplacian and the second eigenvalue of the normalized Laplacian (the latter reflecting the fact that synchronization is easier on well-connected graphs, or equivalently, more difficult on graphs with bottlenecks). This generalizes a previous result obtained by <ref type="bibr" target="#b39">[39]</ref> that considers a spectral relaxation algorithm for Max-Cut that achieves a non-trivial approximation ratio.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">LUD and SDR</head><p>As mentioned earlier, the least squares approach may not be optimal when a large proportion of the measurements are outliers <ref type="bibr" target="#b20">[20,</ref><ref type="bibr" target="#b27">27,</ref><ref type="bibr" target="#b37">37]</ref>. To guard the orientation estimation from outliers, we replace the sum of squared residuals in (2.1) with the more robust sum of unsquared residuals</p><formula xml:id="formula_9">min R 1 ,...,R n ∈SO(d) (i,j)∈E R −1 i R j − R ij , (3.1)</formula><p>to which we refer as LUD. <ref type="bibr" target="#b3">4</ref> The self-consistency error given in (3.1) mitigates the contribution from large residuals that may result from outliers. However, the problem (3.1) is non-convex and therefore extremely difficult to solve if one requires the matrices R i to be rotations, that is, when adding the orthogonality and determinant constraints of SO(d) given in (1.1).</p><p>Note that the cost function (3.1) can be rewritten using the Gram matrix G that was defined earlier in (2.3) for the SDP relaxation. Indeed, the optimization (3.1) is equivalent to</p><formula xml:id="formula_10">min R 1 ,...,R n ∈SO(d) (i,j)∈E G ij − R ij . (3.2)</formula><p>Relaxing the non-convex rank and determinant constraints as in the SDP relaxation leads to the follow- ing natural convex relaxation of the optimization problem (3.1):</p><formula xml:id="formula_11">min G (i,j)∈E G ij − R ij s.t. G ii = I d , and G 0. (3.3)</formula><p>This type of relaxation is often referred to as SDR <ref type="bibr" target="#b21">[21,</ref><ref type="bibr" target="#b36">36]</ref>. Once G is found, either the deterministic or random procedures for rounding can be used to determine the rotations R 1 , . . . , R n .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.">Exact recovery of the gram matrix G</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Main theorem</head><p>Consider the Gram matrix G as G = (G ij ) i,j=1,...,n , where G ij = R i R j is obtained by solving the minimiza- tion problem (3.3). We will show that, for a certain probabilistic measurement model, the Gram matrix G is exactly recovered with high probability (w.h.p.). Specifically, in our model, the measurements R ij are given by</p><formula xml:id="formula_12">R ij = δ ij R i R j + (1 − δ ij ) ˜ R ij (4.1)</formula><p>for (i, j) ∈ E , where δ ij are i.i.d. indicator Bernoulli random variables with probability p (i.e. δ ij = 1 with probability p and δ ij = 0 with probability 1 − p). The incorrect measurements˜Rmeasurements˜ measurements˜R ij are i.i.d. samples from the uniform (Haar) distribution over the group SO(d). Assume that all pairwise ratios are measured, that is, E = {(i, j)|i, j = 1 . . . , n}. 5 Let E c denote the index set of correctly measured rotation ratios R ij , that is,</p><formula xml:id="formula_13">E c = {(i, j)|R ij = R i R j }.</formula><p>In fact, E c is the edge set of a realization of a random graph drawn from the Erd˝ os-Rényi model G (n, p). In the remainder of this section, we shall prove the existence of a critical probability, denoted by p * c (d), such that, for all p &gt; p * c (d), the program (3.3) recovers G from the measurements (4.1) w.h.p. (that tends to 1 as n → ∞). In addition, we give an explicit upper bound p c (d) for p * c (d). Theorem 4.1 Assume that all pairwise ratio measurements R ij are generated according to <ref type="bibr">(4.1)</ref>. Then there exists a critical probability p * c (d) such that, when p &gt; p * c (d), the Gram matrix G is exactly recov- ered by the solution to the optimization problem (3.3) w.h.p. (as n → ∞). Moreover, an upper bound</p><formula xml:id="formula_14">p c (d) for p * c (d) is p c (d) = 1 − ⎛ ⎝ −c 1 (d) + c 1 (d) 2 + 8(c(d) + 2/ √ d)/ √ d 2(c(d) + 2/ √ d) ⎞ ⎠ 2 , (4.2)</formula><p>where c(d) and c 1 (d) are constants defined as</p><formula xml:id="formula_15">c(d) = 1 d E Tr I d − R I d − R , (4.3) c 1 (d) = 1 − c(d) 2 d 2 , (4.4)</formula><p>where the expectation is w.r.t. the rotation R that is distributed uniformly at random. In particular,</p><formula xml:id="formula_16">p c (2) ≈ 0.4570, p c (3) ≈ 0.4912 and p c (4) ≈ 0.5186</formula><p>for SO(2), SO(3) and SO(4), respectively.</p><p>Remark 4.1 The case d = 1 is trivial since the special orthogonal group contains only one element in this case, but is not trivial for the orthogonal group O(1). In fact, the latter is equivalent to Max-Cut.</p><p>Our proof below implies that p c (1) = 0, that is, if the proportion of correct measurements is strictly greater than 1 2 , then all signs are recovered exactly w.h.p. as n → ∞. In fact, the proof below shows that w.h.p. the signs are recovered exactly if the bias of the proportion of good measurements is as small as O( log n/n).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Proof of Theorem 4.1</head><p>We will show that the correct solution is a global minimum of the objective function, and analyze the perturbation of the objective function directly. The proof proceeds in two steps. First, we show that, without loss of generality, we can assume that the correct solution is R i = I d and G ij = I d for all 1 i, j n. Then, we consider the projection of the perturbation into three different subspaces. <ref type="bibr" target="#b5">6</ref> Using the fact that the diagonal blocks of the perturbation matrix must be 0, it is possible to show that when the perturbation reduces the objective function for indices in E \E c (that is, the incorrect measurements), it has to increase the objective function for indices in E c . If the success probability p is large enough, then w.h.p. the amount of increase (to which we later refer as the 'loss') is greater than the amount of decrease (to which we later refer as the 'gain'), therefore the correct solution must be the solution of the convex optimization problem (3.3).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.1">Fixing the correct solution</head><p>Lemma 4.1 If the optimal solution of (3.3) is w.h.p.</p><formula xml:id="formula_17">G ij = I d when R i = I d , then the optimal solution of (3.3) is w.h.p. G ij = R i R j for arbitrary rotations {R i }.</formula><p>Proof. We give a bijection that preserves feasibility and objective value between the feasible solutions to (3.3) when R i = I d and the solution for general R i . In fact, given any feasible solution G for general R i , letˆG</p><formula xml:id="formula_18">letˆ letˆG = diag(R 1 , . . . , R n ) G diag(R 1 , . . . , R n ) . that is, ˆ G ij = R i G ij R j .</formula><p>If we rotate R ij similarly to getˆRgetˆ getˆR ij = R i R ij R j , thenˆRthenˆ thenˆR i,j = I. Since G is the solution of (3.3), we know thatˆGthatˆ thatˆG must be a solution to the following convex program with the same objective value minˆG minˆ minˆG</p><formula xml:id="formula_19">(i,j)∈EˆG ∈Eˆ ∈EˆG ij − ˆ R ij s.t. ˆ G ii = I d , andˆGandˆ andˆG 0. (4.5)</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>152</head><p>LANHUI WANG AND AMIT SINGER However, observe that, for edges in E c , R i R ij R j = I d ; for edges not in E c , R i R ij R j is still a uni- formly distributed random rotation in SO(d) (due to the left and right invariance of the Haar measure). Therefore, (4.5) is equivalent to <ref type="bibr">(3.</ref>3) when R i = I d .</p><p>The other direction can be proved identically.</p><p>Using the Lemma 4.1, we can assume, without loss of generality, that R i = I d for all 1 i n. Now the correct solution should be G ij = I d . We denote this solution by G, and consider a perturbation G + Δ.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.2">Decomposing the perturbation</head><p>Let G + Δ be a perturbation of G such that Δ ii = 0 and G + Δ 0. Let S be the d-dimensional linear subspace of R dn spanned by the vectors s 1 , . . . , s d , given by</p><formula xml:id="formula_20">s 1 = (e 1 , e 1 , . . . , e 1 ) , s 2 = (e 2 , e 2 , . . . , e 2 ) , .</formula><p>. .</p><formula xml:id="formula_21">s d = (e d , e d , . . . , e d ) , (4.6)</formula><p>where</p><formula xml:id="formula_22">e m (m = 1, 2, . . . , d) is the d-dimensional row vector e m (l) = 1 if l = m, 0 otherwise, that is, e 1 = (1, 0, . . . , 0), e 2 = (0, 1, 0, . . . , 0), . . . and e d = (0, . . . , 0, 1).</formula><p>Intuitively, if a vector v is in the space S , then the restrictions of v on blocks of size d are all the same (i.e. v 1,...,d = v d+1,...,2d = · · · = v (n−1)d+1,...,nd ). On the other hand, if a vector v is in ¯ S , the orthogonal complement of S , then it satisfies n i=1 v (i−1)d+1,...,id = 0. For two linear subspaces A , B, we use A ⊗ B to denote the space spanned by vectors {a ⊗ b|a ∈ A and b ∈ B}. By properties of tensor operation, the dimension of A ⊗ B equals the dimension of A times the dimension of B. We also identify the tensor product of two vectors a ⊗ b with the (rank 1) matrix ab . Now let P, Q and T be Δ's projections to S ⊗ S , (S ⊗ ¯ S ) ∪ ( ¯ S ⊗ S ) and ¯ S ⊗ ¯ S , respec- tively, that is,</p><formula xml:id="formula_23">Δ = P + Q + T where P ∈ S ⊗ S , Q ∈ (S ⊗ ¯ S ) ∪ ( ¯ S ⊗ S ) and T ∈ ¯ S ⊗ ¯ S .</formula><p>Using the definition of S , it is easy to verify that</p><formula xml:id="formula_24">P ij = P 11 ∀1 i, j n, (4.7) Q = Q 1 + Q 2 , (4.8)</formula><p>where</p><formula xml:id="formula_25">Q 1 ∈ S ⊗ ¯ S , Q 2 ∈ ¯ S ⊗ S , Q 1 = (Q 2 ) , Q 1 1j = Q 1 2j = · · · = Q 1 nj ∀j (4.9)</formula><p>and</p><formula xml:id="formula_26">Q 2 i1 = Q 2 i2 = · · · = Q 2 in , ∀i. (4.10)</formula><p>Moreover, we have</p><formula xml:id="formula_27">j Q 1 1j = 0, i Q 2 i1 = 0 and i,j T ij = 0. (4.11)</formula><p>For the matrix T, the following notation is used to refer to its submatrices </p><formula xml:id="formula_28">T ij = (T pq ij ) p,q=1</formula><formula xml:id="formula_29">F(G) = (i,j)∈E G ij − R ij . (4.12)</formula><p>Then,</p><formula xml:id="formula_30">F(G + Δ) − F(G) = (i,j)∈E (I d − R ij + Δ ij − −I d − R ij ) = (i,j)∈E \E c (I d − R ij + Δ ij − −I d − R ij ) + (i,j)∈E c Δ ij =: f 1 + f 2 . (4.13)</formula><p>Intuitively, if the objective value of G + Δ is smaller than the objective value of G, then Δ ij should be close to 0 for the correct measurements (i, j) ∈ E c , and is large on (i, j) such that (i, j) ∈ E c . We will later show that the 'gain' f 1 from (i, j) ∈ E c can be upper-bounded by the trace of T and the off-diagonal entries of Q 1 ij . Then we will show that when the trace of T is large, the diagonal entries of Δ ij for (i, j) ∈ E c are large, therefore the 'gain' is smaller than the 'loss' generated by these diagonal entries. On the other hand, when the off-diagonal entries of Q 1 ij are large, then the off-diagonal entries of Δ ij for (i, j) ∈ E c are large; once again the 'gain' will be smaller than the 'loss' generated by the off-diagonal entries.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>4.2.3</head><p>Observations on P, Q and T To bound the 'gain' and 'loss', we need the following set of observations.</p><formula xml:id="formula_31">Lemma 4.2 nP 11 = − n i=1 T ii .</formula><p>Proof. Using (4.7-4.11) and the fact that Δ ii = 0, we have</p><formula xml:id="formula_32">0 = i Δ ii = i (P ii + Q 1 ii + Q 2 ii + T ii ) = nP 11 + i Q 1 1i + i Q 2 i1 + i T ii = nP 11 + i T ii . 154 LANHUI WANG AND AMIT SINGER Lemma 4.3 (P ij + Q ij ) + (P ji + Q ji ) = −(T ii + T jj ).</formula><p>Proof. We use the symmetry of the matrices P, Q:</p><formula xml:id="formula_33">(P ij + Q ij ) + (P ji + Q ji ) = P ii + Q 1 ij + Q 2 ij + P jj + Q 1 ji + Q 2 ji = P ii + Q 1 jj + Q 2 ii + P jj + Q 1 ii + Q 2 jj = (P ii + Q 1 ii + Q 2 ii ) + (P jj + Q 1 jj + Q 2 jj ) = (Δ ii − T ii ) + (Δ jj − T jj ) = −(T ii + T jj ),</formula><p>where the second equality follows (4.9) and (4.10).</p><formula xml:id="formula_34">Lemma 4.4 T 0. Proof. Since G + Δ = G + P + Q + T 0 for any vector v ∈ ¯ S , v (G + Δ)v 0.</formula><p>However, v Gv = v Pv = v Qv = 0 according to the definition of G, P and Q. Therefore, for all v ∈ ¯ S we have v Tv 0. Also, Tw = 0 for w ∈ S . Therefore, if v ∈ ¯ S and w ∈ S , then (v + w)</p><formula xml:id="formula_35">T(v + w) = v Tv 0. Hence, T is PSD.</formula><p>Lemma 4.5 Let T d ij be a diagonal matrix whose diagonal entries are those of T ij ; then</p><formula xml:id="formula_36">i T d ii Tr(T)/ √ d.</formula><p>Proof. This is just a straightforward application of the Cauchy-Schwarz inequality. Define X = i T d ii . Clearly, X 0 , since it is a sum of PSD matrices. Let x 1 , . . . , x d be the diagonal entries of X . Then, from Cauchy-Schwarz inequality, we have</p><formula xml:id="formula_37">Tr(X ) = j x j ⎛ ⎝ j x 2 j ⎞ ⎠ 1/2 · √ d = √ dX , that is, i T d ii = =X Tr(X )/ √ d = Tr(T)/ √ d.</formula><p>Lemma 4.6 Let A be an n × n adjacency matrix such that A ij = 1 if and only if (i, j) ∈ E c ; otherwise,</p><formula xml:id="formula_38">A ij = 0. Let B = A − (1/n 2 )(1 A1)11</formula><p>, where 1 is the all-ones (column) vector. Let λ = =B 2 , where · · 2 denotes the spectral norm of a matrix. Then</p><formula xml:id="formula_39">λ = O P ( √ n).</formula><p>Here the notation f = O P (g) means that f is upper bounded by c p · g with high probability, where c p is a constant that may depend on p.</p><p>Proof. Let B 1 = A − p11 . Observe that B 1 is a random matrix where each off-diagonal entry is either (1 − p) with probability p or −p with probability (1 − p). Therefore, by Wigner's semi-circle law and the concentration of the eigenvalues of random symmetric matrices with i.i.d. entries of absolute value at most 1 <ref type="bibr" target="#b0">[1]</ref>, the largest eigenvalue (in absolute value) of B 1 is B 1 2 = O P ( √ n). Then we have</p><formula xml:id="formula_40">B 2 = B 1 + p − 1 n 2 (1 A1) 11 2 B 1 2 + p − 1 n 2 (1 A1) 11 2 B 1 2 + nO P (n −1 log n) = O P ( √ n),</formula><p>where the second inequality uses the Chernoff bound. </p><formula xml:id="formula_41">2 (A) ≈ λ 1 (B) = O P ( √ n).</formula><p>Using these observations, we can bound the sum of norm of all T ij 's by the trace of T.</p><p>Lemma 4.7 We have the following three inequalities for the matrix T:</p><formula xml:id="formula_42">1. | (i,j)∈E c T pq ij | λ Tr(T pp ) 1/2 Tr(T qq ) 1/2 for p, q = 1, 2, . . . , d; 2. ||I d , (i,j)∈E c T ij | λ Tr(T); 3. (i,j)∈E c T ij λ Tr(T).</formula><p>Here the notation for the inner product of two matrices X , Y means Tr(X Y ).</p><formula xml:id="formula_43">Proof. (1) Since T 0, we can assume T pq ij = =u p i , u q j , where u p i (i = 1, . . . , n, p = 1, . . . , d) is an n-dimensional row vector, it follows that Tr(T pp ) = n i=1 u p i , u p i</formula><p>, and</p><formula xml:id="formula_44">(i,j)∈E c T pq ij = (u p 1 , . . . , u p n )(A ⊗ I n )(u q 1 , . . . , u q n ) . We claim that n i=1 u p i = 0. In fact, since T ∈ ¯ S ⊗ ¯ S for any p, q = 1, . . . , d, we have n i,j=1 T pq ij = s p Ts q = 0 . Therefore, we obtain 0 = n i,j=1 T pp ij = n i,j=1 u p i , u p j = n i=1 u p i , n j=1 u p j = n i=1 u p i 2</formula><p>and thus we have</p><formula xml:id="formula_45">n i=1 u p i = 0 for p = 1, . . . , d. (4.14) Let v p m (m = 1, . . . , n, p = 1, . . . , d) be an n-dimensional row vector such that v p m = (u p 1 (m), u p 2 (m), . . . , u p n (m));</formula><p>then we have n m=1 v p m 2 = Tr(T pp ), and v p m , 1 = 0 due to <ref type="bibr">(4.14)</ref>. Therefore,</p><formula xml:id="formula_46">(i,j)∈E c T pq ij = |(u p 1 , . . . , u p n )(A ⊗ I n )(u q 1 , . . . , u q n ) | = n m=1 v p m A(v q m ) m λv p m v q m λ m v p m 2 1/2 m v q m 2 1/2 , = λ Tr(T pp ) 1/2 Tr(T qq ) 1/2 ,</formula><p>where the first inequality uses Lemma 4.6 and the fact that v p m (m = 1, . . . , n, p = 1, . . . , d) is orthogonal to the all-ones vector 1, and the second inequality uses the Cauchy-Schwarz inequality.</p><p>(2) ||I d ,</p><formula xml:id="formula_47">(i,j)∈E c T ij | λ Tr(T) is clear from 1 when p = q. (3) From (1), we have (i,j)∈E c T ij = p,q ⎛ ⎝ (i,j)∈E c T pq ij ⎞ ⎠ 2 p,q (λ Tr(T pp ) 1/2 Tr(T qq ) 1/2 ) 2 = λ p,q Tr(T pp ) Tr(T qq ) = λ p Tr(T pp )</formula><p>= λ Tr(T).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>4.2.4</head><p>Bounding the 'gain' from incorrect measurements To make the intuition that 'gain' from incor- rect measurements is always upper-bounded by the 'loss' from correct measurements formal, we shall first focus on (i, j) ∈ E c , and bound the 'gain' by the trace of T and norms of Q 1 ij . Recall that f 1 in (4.13) is the 'gain'; we shall bound it using the following lemma.</p><p>Lemma 4.8 For any pair of non-zero matrices M 1 , M 2 ∈ R m×m , we have</p><formula xml:id="formula_48">M 1 + M 2 − −M 1 M 1 /M 1 , M 2 . (4.15)</formula><p>Proof. Using the Cauchy-Schwarz inequality, we obtain</p><formula xml:id="formula_49">M 1 2 + +M 1 , M 2 = =M 1 , M 1 + M 2 M 1 M 1 + M 2 ,</formula><p>which is equivalent to (4.15).</p><p>We apply Lemma 4.8 to the 'gain' f 1 and obtain</p><formula xml:id="formula_50">f 1 (i,j)∈E \E c I d − R ij I d − R ij , Δ ij = (i,j)∈E \E c I d − R ij I d − R ij , P ij + Q ij + T ij . (4.16)</formula><p>First, we shall bound the 'gain' from the matrix P. Since blocks of P are the same, the average</p><formula xml:id="formula_51">1 |E \E c | (i,j)∈E \E c I d − R ij I d − R ij , P ij</formula><p>should be concentrated around the expectation of</p><formula xml:id="formula_52">(I d − R ij )/I d − R ij , P ij .</formula><p>The expectation is ana- lyzed in Appendix A. By (4.7-4.10) and the law of large numbers, we obtain that</p><formula xml:id="formula_53">(i,j)∈E \E c I d − R ij I d − R ij , P ij = (c(d)(1 − p)n(n − 1) + O P (n log n)) Tr(P 11 ) = −(c(d)(1 − p)(n − 1) + O P ( log n)) Tr(T), (4.17)</formula><p>where the last equality uses Lemma 4.2, c(d) is defined in (4.3) and the rotation matrix R is uniformly sampled from the group SO(d) (see Appendix A for a detailed discussion). For matrix Q we use similar concentration bounds</p><formula xml:id="formula_54">(i,j)∈E \E c I d − R ij I d − R ij , Q ij = (i,j)∈E \E c I d − R ij I d − R ij , Q 1 ij + Q 2 ij = (i,j)∈E \E c I d − R ij I d − R ij , Q 1 jj + Q 2 ii j (n − p(n − 1))c(d)I d , Q 1 jj + i (n − p(n − 1))c(d)I d , Q 2 ii − O P ( n log n) i Q 1 jj − O P ( n log n) i Q 2 ii = (n − p(n − 1)) cI d , j Q 1 jj + (n − p(n − 1)) cI d , i Q 2 ii − O P ( n log n) i Q 1 ii = −O P ( n log n) i Q 1 ii , (4.18)</formula><p>where the third equality uses the fact that Q 1 = (Q 2 ) , and the last equality follows (4.11).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>158</head><p>LANHUI WANG AND AMIT SINGER Finally, we shall bound the 'gain' from matrix T, which is</p><formula xml:id="formula_55">(i,j)∈E \E c I d − R ij I d − R ij , T ij . (4.19)</formula><p>Before continuing, we need the following results in Lemma 4.9 for a matrix D, where D is defined as</p><formula xml:id="formula_56">D ij = ⎧ ⎪ ⎨ ⎪ ⎩ I d − R ij I d − R ij − c(d)I d for (i, j) ∈ E \E c , 0 otherwise. (4.20)</formula><p>The proof of Lemma 4.9 is in Appendix B. </p><formula xml:id="formula_57">D + 2 ≈ ≈D − 2 ≈ 1 2 (1 − p)n(n − 1)(1 − c(d) 2 d).</formula><p>(4.21)</p><p>We return to lower bounding <ref type="bibr">(4.19)</ref>. Since</p><formula xml:id="formula_58">ij T ij = 0, we have (i,j)∈E \E c I d − R ij I d − R ij , T ij = (i,j)∈E \E c c(d)I d , T ij + (i,j)∈E \E c I d − R ij I d − R ij − c(d)I d , T ij = −c(d) (i,j)∈E c I d , T ij − c(d) i I d , T ii + i,j D ij , T ij = −c(d) (i,j)∈E c I d , T ij − c(d) Tr(T) + Tr(DT) = −c(d) (i,j)∈E c I d , T ij − c(d) Tr(T) + Tr(D + T) + Tr(D − T) −c(d) (i,j)∈E c I d , T ij − c(d) Tr(T) + Tr(D − T), (4.22)</formula><p>where the last inequality follows from the fact that Tr(D + T) 0 since both T and D + are PSD matrices.</p><p>Recall that, for any PSD matrix X , the following inequality holds: X Tr(X ). Since T 0, using (4.21) we obtain</p><formula xml:id="formula_59">|Tr(D − T)| D − T D − Tr(T) ≈ 1 √ 2 (1 − p) 1 − c(d) 2 dn Tr(T). (4.23)</formula><p>Also, Lemma 4.7 reads</p><formula xml:id="formula_60">I d , (i,j)∈E c T ij λ Tr(T). (4.24)</formula><p>Combining (4.22-4.24) together gives</p><formula xml:id="formula_61">(i,j)∈E \E c I d − R ij I d − R ij , T ij − c(d)λ + c(d) + 1 √ 2 (1 − p) 1 − c(d) 2 dn Tr(T). (4.25)</formula><p>Since, from Lemma 4.6, we have λ = O P ( √ n), the bound is given by</p><formula xml:id="formula_62">(i,j)∈E \E c I d − R ij I d − R ij , T ij − 1 √ 2 (1 − p) 1 − c(d) 2 dn + O P ( √ n) Tr(T). (4.26)</formula><p>Combining (4.16-4.18) and (4.26) together, we obtain a lower bound for the gain from Δ as follows:</p><formula xml:id="formula_63">f 1 − 1 √ 2 (1 − p) 1 − c(d) 2 dn + c(d)(1 − p)n + O P ( √ n) Tr(T) − O P ( n log n) i Q 1 ii . (4.27)</formula><p>4.2.5 Bounding the 'loss' from correct measurements Now we consider the part</p><formula xml:id="formula_64">f 2 = (i,j)∈E c Δ ij ,</formula><p>which is the loss from the correct entries. We use the notation Δ d ij and Δ off ij to represent the restrictions of the sub-matrices Δ ij on the diagonal entries and off-diagonal entries, respectively. We will analyze</p><formula xml:id="formula_65">(i,j)∈E c Δ d ij and (i,j)∈E c Δ off ij separately.</formula><p>For the diagonal entries, we have</p><formula xml:id="formula_66">(i,j)∈E c Δ d ij = (i,j)∈E c P d ij + Q d ij + T d ij (i,j)∈E c (P d ij + Q d ij + T d ij ) (i,j)∈E c P d ij + Q d ij − (i,j)∈E c T d ij = (i,j)∈E c T d ii + T d jj − (i,j)∈E c T d ij = pn i T d ii − O P ( n log n) Tr(T) − (i,j)∈E c T d ij 2pn √ d Tr(T) − O P ( n log n) Tr(T) − λ Tr(T) = pn √ d − O P ( n log n) Tr(T), (4.28)</formula><p>where the second equality uses Lemma 4.3, the third equality uses the law of large numbers and the Chernoff bound, the last inequality follows Lemmas 4.5 and 4.7, and the last equality uses the fact that λ = O P ( √ n) from Lemma 4.6. For the off-diagonal entries, we have the following lemma, whose proof is deferred to Appendix C. Lemma 4.10</p><formula xml:id="formula_67">(i,j)∈E c Δ off ij p d 2 O P (n) n i=1 Q 1 ii − O P (n) Tr(T) . (4.29)</formula><p>Finally, we can merge the loss in two parts by a simple inequality. , and setting α = 1 − 1/ √ n and β = 2/ √ n − 1/n, we obtain a lower bound for the loss from Δ when p &gt; 1 2 :</p><formula xml:id="formula_68">f 2 = (i,j)∈E c Δ ij 1 − 1 √ n (i,j)∈E c Δ d ij + 2 √ n − 1 n (i,j)∈E c Δ off ij = 2pn √ d − O P (n 3/4 ) Tr(T) + O P (n 3/4 ) n i=1 Q 1 ii . (4.30)</formula><p>4.2.6 Completing the proof Now that we have bounded the 'gain' and the 'loss', we just need a condition on p such that the 'loss' is greater than the 'gain' (w.h.p.). Combining (4.13), (4.27) and (4.30) together, we obtain</p><formula xml:id="formula_69">F(G + Δ) − F(G) = f 1 + f 2 2p/ √ d − 1 √ 2 (1 − p) 1 − c(d) 2 d − c(d)(1 − p) n − O P (n 3/4 ) Tr(T), (4.31)</formula><p>that is, when the number of rotations n is large enough, we just need</p><formula xml:id="formula_70">p 1 − ⎛ ⎝ −c 1 (d) + c 1 (d) 2 + 8(c(d) + 2/ √ d)/ √ d 2(c(d) + 2/ √ d) ⎞ ⎠ 2 := p c (d),</formula><p>where c 1 (d) is defined as (4.4)</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Stability of the LUD</head><p>In this section, we will analyze the behavior of the LUD when the measurements R ij on the 'good' edge set E c are no longer the true rotation ratios R i R j ; instead, R ij are small perturbations of R i R j . Similarly to the noise model (4.1), we assume in our model that the measurements R ij are given by</p><formula xml:id="formula_71">R ij = δ ij ¯ R ij + (1 − δ ij ) ˜ R ij , (5.1)</formula><p>where the rotation ¯ R ij is sampled from a probability distribution (e.g. the von Mises-Fisher distribution <ref type="bibr" target="#b7">[8]</ref>; cf. Section 8.1.2) such that</p><formula xml:id="formula_72">E( ¯ R ij − R i R j ) = , and Var( ¯ R ij − R i R j ) = O(( 2 ). (5.2)</formula><p>Note that the stability result is not limited to the random noise, and the analysis can also be applied to bounded deterministic perturbations.</p><p>We can generalize the analysis for exact recovery to this new noise model (5.1) with small pertur- bations on the 'good' edge set and prove the following theorem.</p><p>Theorem 5.1 (Weak stability) Assume that all pairwise ratio measurements R ij are generated according to (5.1) such that the condition (5.2) holds for a fixed small &gt; 0. Then there exists a critical probability</p><formula xml:id="formula_73">p * c (d) such that, when p &gt; p * c (d)</formula><p>, the solutionˆGsolutionˆ solutionˆG to the optimization problem (3.3) is close to the true Gram matrix G in the sense that</p><formula xml:id="formula_74">G − ˆ G 2 O(n 2 )) 2 w.h.p. (as n → ∞). Moreover, an upper bound p c (d) for p * c (d) is given by (4.2).</formula><p>Proof. First, the 'gain' f 1 from the incorrect measurements remains the same, since the noise model for the 'bad' edge set E \E c is not changed. Thus, the lower bound for f 1 is given in (4.27). For the 'loss' from the good measurements, we have we obtain</p><formula xml:id="formula_75">f 2 = (i,j)∈E c (I d − R ij + Δ ij − −I d − R ij ) (i,j)∈E c (Δ ij − 2I d − R ij ) (i,j)∈E c Δ ij − 2p(n 2 + O P (n log n))).<label>(</label></formula><formula xml:id="formula_76">(i,j)∈E c Δ ij 1 − 0 (i,j)∈E c Δ d ij + √ 0 (i,j)∈E c Δ off ij c 2 n Tr(T) + c 3 n n i=1 Q 1 ii − O P ( n log n) Tr(T), (5.4)</formula><p>where c 2 and c 3 are some constants. Thus, combining (4.27), (5.3) and (5.4) together, we obtain</p><formula xml:id="formula_77">F(G + Δ) − F(G) = f 1 + f 2 c 4 n Tr(T) + c 3 n n i=1 Q 1 ii − O P ( n log n) Tr(T) − O P ( n log n) n i=1 Q 1 ii − 2p(n 2 + O P (n log n))), (5.5)</formula><p>where c 4 is some constant. Thus, if the RHS of (5.5) is greater than zero, then G + Δ is not the minimizer of F. In other words, if G + Δ is the minimizer of F, then the RHS of (5.5) is not greater than zero. Let n → ∞ in (5.5). we obtain the necessary condition for the minimizer G + Δ of F:</p><formula xml:id="formula_78">c 4 Tr(T) + c 3 n i=1 Q 1 ii 2pn. (5.6)</formula><p>To show that condition (5.6) leads to the conclusion that the amount of perturbation</p><formula xml:id="formula_79">Δ 2 = =P 2 + +Q 2 + +T 2 . (5.7)</formula><p>is less than O(n 2 )) 2 , we need the following lemmas to upper bound Δ 2 by parts.</p><formula xml:id="formula_80">Lemma 5.1 P 2 Tr(T) 2 O(n 2 )) 2 , and T 2 Tr(T) 2 O(n 2 )) 2 . (5.8)</formula><p>Proof. Using the fact that, for any PSD matrix M , M Tr(M ), we have</p><formula xml:id="formula_81">P 2 = n 2 P 11 2 = n i=1 T ii 2 Tr n i=1 T ii 2 = Tr(T) 2 , (5.9) T 2 Tr(T) 2 . (5.10)</formula><p>And following (5.6), we obtain (5.8).</p><formula xml:id="formula_82">Lemma 5.2 Q 2 2 Tr(T) 2 − 2 Tr(T) + nd. ( 5 . 1 1 ) Proof. Since G + Δ 0, we can decompose G + Δ as G + Δ = nd i=1 λ i v i v i ,</formula><p>where the eigenvectors v i ∈ R nd and the associated eigenvalues λ i 0 for all i. Then we further decompose each v i as</p><formula xml:id="formula_83">v i = v S i + v ¯ S i</formula><p>, where v S i ∈ S and v ¯ S i ∈ ¯ S . Thus, we obtain</p><formula xml:id="formula_84">G + Δ = nd i=1 λ i v i v i = nd i=1 λ i (v S i + v ¯ S i )(v S i + v ¯ S i ) = nd i=1 λ i v S i (v S i ) + nd i=1 λ i v ¯ S i (v ¯ S i ) + nd i=1 λ i v S i (v ¯ S i ) + nd i=1 λ i v ¯ S i (v S i ) . (5.12)</formula><p>On the other hand, we can decompose G + Δ as</p><formula xml:id="formula_85">G + Δ = (G + P) + Q 1 + Q 2 + T, (5.13)</formula><p>where G + P ∈ S ⊗ S , Q 1 ∈ S ⊗ ¯ S , Q 2 ∈ ¯ S ⊗ S and T ∈ ¯ S ⊗ ¯ S . By comparing the right-hand sides of (5.12) and (5.13), we conclude that</p><formula xml:id="formula_86">G + P = nd i=1 λ i v S i (v S i ) , T = nd i=1 λ i v ¯ S i (v ¯ S i ) , Q 1 = nd i=1 λ i v S i (v ¯ S i ) , Q 2 = nd i=1 λ i v ¯ S i (v S i ) = (Q 1 ) .</formula><p>Therefore, we have</p><formula xml:id="formula_87">Q 2 = 2Q 1 2 = 2 nd i=1 λ i v S i (v ¯ S i ) 2 = 2 Tr ⎛ ⎝ nd i=1 λ i v ¯ S i (v S i ) nd j=1 λ j v S j (v ¯ S j ) ⎞ ⎠ = 2 nd i,j=1 λ i λ j (v S i ) v S j (v ¯ S j ) v ¯ S i nd i,j=1 λ i λ j ((v S i ) v S j (v S i ) v S j + (v ¯ S j ) v ¯ S i (v ¯ S j ) v ¯ S i ) = Tr ⎛ ⎝ nd i=1 λ i v S i (v S i ) nd j=1 λ j v S j (v S j ) ⎞ ⎠ + Tr ⎛ ⎝ nd i=1 λ i v ¯ S i (v ¯ S i ) nd j=1 λ j v ¯ S j (v ¯ S j ) ⎞ ⎠ = =G + P 2 + +T 2 . (5.14)</formula><p>Using the fact that G = I nd and</p><formula xml:id="formula_88">nP 11 = − i T ii , we obtain G + P 2 = =G 2 + +P 2 + 2 TrG, P = nd + +P 2 − 2Tr(T). (5.15)</formula><p>Combining (5.9), (5.10), (5.15) and (5.14), we get (5.11).</p><p>Using Lemmas 5.1 and 5.2, we reach the conclusion in the theorem.</p><p>Remark 5.1 Using Lemma 5.2, Q 2 O(n 2 )) 2 holds when 1/ √ n, which leads to the weak sta- bility result of the LUD stated in Theorem 5.1 that requires to be fixed. In fact, a stronger stability result of the LUD that allows → 0 as n → ∞ can also be proved using ideas similar to the proof of Theorem 4.1. The proof of strong stability can be found in Appendix 9.</p><p>Theorem 5.2 (Strong stability) Assume that all pairwise ratio measurements R ij are generated accord- ing to (5.1) such that the condition (5.2) holds for arbitrary small &gt; 0. Then there exists a critical probability p * c (d) such that when p &gt; p * c (d), the solutionˆGsolutionˆ solutionˆG to the optimization problem (3.3) is close to the true Gram matrix G in the sense that</p><formula xml:id="formula_89">G − ˆ G 2 O(n 2 )) 2</formula><p>w.h.p. (as n → ∞). Moreover, an upper bound p c (d) for p * c (d) is given by (4.2).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6.">A generalization of the LUD to random incomplete measurement graphs</head><p>The analysis of exact and stable recovery of rotations from full measurements (Sections 4 and 5) can be straightforwardly generalized to the case of random incomplete measurement graphs. Here we assume that the edge set E , which is the index set of measured rotation ratios R ij , is a realization of a random graph drawn from the Erd˝ os-Rényi model G (n, p 1 ), p 1 2 log(n)/n, and the rotation measurements R ij in the edge set E are generated according to (4.1) or (5.1). The reason why we have the restriction that p 1 2 log(n)/n is that as n tends to infinity, the probability that a graph on n vertices with edge probability 2 log(n)/n is connected, tends to 1. The 'good' edge set E c and the 'bad' edge set E \E c can be seen as realizations of random graphs drawn from the Erd˝ os-Rényi models G (n,</p><formula xml:id="formula_90">p 1 (1 − p))</formula><p>and G (n, p 1 p), respectively. As a consequence, we can apply the same arguments in Section 4 and 5 and obtain the following theorems that are analogous to Theorems 4.1, 5.1 and 5.2. The associated numerical results are provided in Section 8.2.</p><p>Theorem 6.1 Assume that the index set of measured rotation ratios E is a realization of a random graph drawn from the Erd˝ os-Rényi model G (n, p 1 ), p 1 2 log(n)/n, and the rotation ratio measurements R ij in E are generated according to (4.1). Then there exists a critical probability p * c (d, p 1 ) such that when p &gt; p * c (d, p 1 ), the Gram matrix G is exactly recovered by the solution to the optimization problem (3.3) w.h.p. (as n → ∞). Moreover, an upper bound</p><formula xml:id="formula_91">p c (d, p 1 ) for p * c (d, p 1 ) is p c (d, p 1 ) = 1 − ⎛ ⎝ −c 1 (d) + c 1 (d) 2 + 8p 1 (c(d) + 2/ √ d)/ √ d 2 √ p 1 (c(d) + 2/ √ d) ⎞ ⎠ 2 , (6.1)</formula><p>where c(d) and c 1 (d) are constants defined in (4.3) and (4.4). In particular, when</p><formula xml:id="formula_92">p 1 = 1, p c (d, 1) = p c (d) in (4.2).</formula><p>Theorem 6.2 (Weak stability) Assume that the index set of measurements E is generalized as Theorem 6.1, and the rotation ratio measurements R ij in E are generated according to (5.1) such that the condition (5.2) holds for a fixed small &gt; 0. Then there exists a critical probability p * c (d, p 1 ) such that when p &gt; p * c (d, p 1 ), the solutionˆGsolutionˆ solutionˆG to the optimization problem (3.3) is close to the true Gram matrix G in the sense that</p><formula xml:id="formula_93">G − ˆ G 2 O(n 2 )) 2 w.h.p. (as n → ∞). Moreover, an upper bound p c (d, p 1 ) for p * c (d, p 1 )</formula><p>is given by (6.1). Theorem 6.3 (Strong stability) Assume that the index set of measurements E is generalized as Theorem 6.1, and the rotation ratio measurements R ij in E are generated according to (5.1) such that the condition (5.2) holds for an arbitrary small &gt; 0. Then there exists a critical probability p * c (d, p 1 ) such that when p &gt; p * c (d, p 1 ), the solutionˆGsolutionˆ solutionˆG to the optimization problem (3.3) is close to the true Gram matrix G in the sense that</p><formula xml:id="formula_94">G − ˆ G 2 O(n 2 )) 2 w.h.p. (as n → ∞). Moreover, an upper bound p c (d, p 1 ) for p * c (d, p 1 )</formula><p>is given by (6.1).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="7.">Alternating direction augmented lagrangian method</head><p>Here we briefly describe the ADM <ref type="bibr" target="#b42">[42]</ref> to solve the non-smooth minimization problem (3.3). The ADM is a multiple-splitting algorithm that minimizes the dual augmented Lagrangian function sequentially regarding the Lagrange multipliers, then the dual slack variables and finally the primal variables in each step. In addition, in the minimization over a certain variable, the other variables are kept fixed. The optimization problem (3.3) can be written as</p><formula xml:id="formula_95">min X ij ,G0 i&lt;j X ij s.t. A (G) = b, X ij = R ij − G ij , (7.1)</formula><p>where the operator A : R nd×nd → R nd 2 is defined as</p><formula xml:id="formula_96">A (G) = (G pq ii ) i=1,...,n, p,q=1,...d</formula><p>and the row vector b ∈ R nd 2 is</p><formula xml:id="formula_97">b = 1 n ⊗ (X (p=q) (p, q)) p,q=1,...d . Since max θ ij ,y,W 0 min X ij ,G i&lt;j (X ij − −θ ij , X ij − R ij + G ij ) − −y, A (G) − b − −G, W ⇔ max θ ij ,y,W 0 min X ij ,G −−Q(θ ) + W + A * (y), G + yb + i&lt;j (X ij − −θ ij , X ij + +θ ij , R ij ),<label>(7.2)</label></formula><p>where</p><formula xml:id="formula_98">Q(θ ) = 1 2 ⎛ ⎜ ⎜ ⎜ ⎜ ⎝ 0 θ 12 · · · θ 1m θ 12 0 · · · θ 2m . . . . . . . . . . . . θ 1m θ 2m · · · 0 ⎞ ⎟ ⎟ ⎟ ⎟ ⎠ .</formula><p>We need to first minimize the function over X ij and G in (7.2). The rearrangement of terms in (7.2) enable us to minimize −−Q(θ ) + W + A * (y), G over G and minimize</p><formula xml:id="formula_99">X ij − −θ ij , X ij over X ij , i &lt; j separately. To minimize −−Q(θ ) + W + A * (y), G over G, the optimum value will be −∞ if Q(θ ) + W + A * (y) | = 0.</formula><p>Therefore, due to the dual feasibility, Q(θ ) + W + A * (y) = 0 and the optimum value is zero. Now we consider to minimize the part X ij − −θ ij , X ij over X ij . If θ ij &gt; 1, then let X ij = αθ ij , α &gt; 0 and then, X ij − −θ ij , X ij = αθ ij (1 − −θ ij ) goes to −∞ if α goes to +∞. Hence θ ij 1 and from the fact that X ij − −θ ij , X ij is lower-bounded by X ij (1 − −θ ij ) we obtain that the optimum value is zero where X ij = 0. Therefore, the dual problem is</p><formula xml:id="formula_100">min θ ij ,y,W 0 −yb − i&lt;j θ ij , R ij s.t. θ ij 1, Q(θ ) + W + A * (y) = 0. (7.</formula><p>3)</p><p>The augmented Lagrangian function of the dual problem (7.3) is</p><formula xml:id="formula_101">L (y, θ , W , G) = −yb − i&lt;j θ ij , R ij + +Q(θ ) + W + A * (y), G + μ 2 Q(θ ) + W + A * (y) 2 F , s.t. θ ij 1, (7.4)</formula><p>where μ &gt; 0 is a penalty parameter. Then we can devise an ADM that minimizes (7.4) with respect to y, θ , W and G in an alternating fashion, that is, given some initial guess y 0 , θ 0 , W 0 and G 0 , the simplest ADM method solves the following three subproblems sequentially in each iteration:</p><formula xml:id="formula_102">y k+1 = arg min y L (y, θ k , W k , G k ),<label>(7.5)</label></formula><formula xml:id="formula_103">θ k+1 ij = arg min θ ij L (y k+1 , θ , W k , G k ) s.t. θ ij 1,<label>(7.6)</label></formula><formula xml:id="formula_104">W k+1 = arg min W 0 L (y k+1 , θ k+1 , W , G k ),<label>(7.7)</label></formula><p>and updates the Lagrange multiplier G by</p><formula xml:id="formula_105">G k+1 = G k + γ μ(Q(θ k+1 ) + W k+1 + A * (y k+1 )),<label>(7.8)</label></formula><p>where γ ∈ (0, (1 + √ 5)/2) is an appropriately chosen step length. To solve (7.5), set ∇ y L = 0 and using A A * = I, we obtain</p><formula xml:id="formula_106">y k+1 = −A (Q(θ k ) + W k ) − 1 μ (A (G k ) − b).</formula><p>By rearrangement of terms of L , it is easy to see that problem (7.6) is equivalent to</p><formula xml:id="formula_107">min θ ij −−θ ij , R ij + μ 2 θ ij − Φ ij 2 F , s.t. θ ij t 1,</formula><p>where</p><formula xml:id="formula_108">Φ = W k + A * (y k+1 ) + (1/μ)G k .</formula><p>And it can be further simplified as</p><formula xml:id="formula_109">min θ ij θ ij , μΦ ij − R ij + μ 2 θ ij 2 s.t. θ ij 1,</formula><p>whose solution is</p><formula xml:id="formula_110">θ ij = ⎧ ⎪ ⎪ ⎨ ⎪ ⎪ ⎩ 1 μ R ij − Φ ij if 1 μ R ij − Φ ij 1, R ij − μΦ ij R ij − μΦ ij otherwise.</formula><p>Problem (7.7) is equivalent to</p><formula xml:id="formula_111">min W − H k 2 F s.t. W 0,</formula><p>where</p><formula xml:id="formula_112">H k = −Q(θ k+1 ) − A * (y k+1 ) − (1/μ)G k . Hence, we obtain the solution W k+1 = V + Σ + V + , where</formula><formula xml:id="formula_113">V ΣV = (V + V − ) Σ + 0 0 Σ − V + V − (7.9)</formula><p>is the spectral decomposition of the matrix H k , and Σ + and Σ − are the positive and negative eigenvalues of H k , respectively. Following (7.8), we have</p><formula xml:id="formula_114">G k+1 = (1 − γ )G k + γ μ(W k+1 − H k ).</formula><p>The convergence analysis and the practical issues related to how to take advantage of the low-rank assumption of G in the eigenvalue decomposition performed at each iteration, strategies for adjusting the penalty parameter μ, the use of a step size γ for updating the primal variable X and termination rules using the in-feasibility measures are discussed in detail in <ref type="bibr" target="#b42">[42]</ref>. According to the convergence rate analysis of the ADM in <ref type="bibr" target="#b17">[17]</ref>, we need O(1/δ) iterations to reach a δ accuracy. At each iteration, the most time-consuming step of ADM is the computation of the eigenvalue decomposition in (7.9) . For- tunately, for the synchronization problem, the primal solution G is a low rank matrix (i.e. rank(G) = d). Moreover, since the optimal solution pair (y, θ , W , G) satisfies the complementary condition WG = 0, the matrices W and G share the same set of eigenvectors and the positive eigenvalues of G correspond to zero eigenvalues of W . Therefore, at the kth iteration we only need to compute V − , the part corre- sponding to the negative eigenvalues of W k . Thus, to take advantage of the low rank structure of G, we use the Arnoldi iterations <ref type="bibr" target="#b1">[2]</ref> to compute first few negative eigenvectors of W k . However, for the noisy case, the optimal solution G may have rank greater than d, and also during the iterations the rank of the solution G k may increase. Correspondingly, during the iterations W k may have more than d negative eigenvalues. Therefore, it is impossible to decide ahead of time how many negative eigenvectors of W k are required. A heuristic that could work well in practice is to compute only eigenvectors whose eigen- values are smaller than some small negative threshold epsilon, with the hope that the number of such eigenvectors would be o(n), yet not effecting the convergence of the algorithm. The Arnoldi iterations require O(n 3 ) operations if O(n) eigenvalues need to be computed. However, when first few negative eigenvalues of W k are required, the time cost by the Arnoldi iterations will be much reduced.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.">Numerical experiments</head><p>All numerical experiments were performed on a machine with 2 Intel(R) Xeon(R) CPUs X5570, each with 4 cores, running at 2.93 GHz. We simulated 100, 500 and 1000 rotations in the groups SO(2) and SO(3), respectively. The noise is added to the rotation ratio measurements according to the ER random graph model G (n, p) (4.1) and the model (5.1) with small perturbations on 'good' edge set in </p><formula xml:id="formula_115">RE( ˆ G, G) = = ˆ G − G/G,<label>(8.1)</label></formula><p>and the mean squared error (MSE) of the estimated rotation matricesˆRmatricesˆ matricesˆR 1 , . . . , ˆ R n as</p><formula xml:id="formula_116">MSE = 1 n n i=1 R i − ˆ O ˆ R i 2 , (8.2)</formula><p>wherê O is the optimal solution to the registration problem between the two sets of rotations {R 1 , . . . , R n } and { ˆ R 1 , . . . , ˆ R n } in the sense of minimizing the MSE. As shown in <ref type="bibr" target="#b32">[32]</ref>, there is a simple procedure to obtain bothˆObothˆ bothˆO and the MSE from the SVD of the matrix (1/n) n i=1ˆR i=1ˆ i=1ˆR i R i . For each experiment with fixed d, n, p and κ, we run 10 trials and record the mean of relative errors and MSEs.</p><p>We compare LUD with Eigenvector method (EIG), SDP <ref type="bibr" target="#b31">[31]</ref> (using the SDP solver SDPLR <ref type="bibr" target="#b6">[7]</ref>). EIG and SDP are two algorithms to solve the least squares problem in (2.1) with equal weights using spectral relaxation and SDR, respectively. LUD does not have an advantage in the running time. In our experiments, the running time of LUD using the ADM is about 10-20 times slower than that of SDP, and it is hundreds of times slower than EIG. We will focus on the comparison of the accuracy of the rotation recovery using the three algorithms.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.1">Experiments with full measurements</head><p>8.1.1 E1: Exact Recovery by LUD In this experiment, we use LUD to recover rotations in SO(2) and SO <ref type="formula" target="#formula_75">(3)</ref> with different values of n and p in the noise model (4.1). <ref type="table" target="#tab_2">Table 1</ref> shows that when n is large enough, the critical probability where the Gram matrix G can be exactly recovered is very close to p c (2) ≈ 0.4570, p c (3) ≈ 0.4912.</p><p>The comparison of the accuracy of the estimated rotations by EIG, SDP and LUD is shown in <ref type="table" target="#tab_3">Tables 2-3</ref> and <ref type="figure" target="#fig_3">Fig. 1</ref>, which demonstrates that LUD outperforms EIG and SDP in terms of accuracy.  <ref type="formula" target="#formula_75">(2)</ref> with different values of n, p in the noise model (5.1). In (5.1), the perturbed rotations ¯ R ij for the 'good' edge set are sampled from a von Mises-Fisher distribution <ref type="bibr" target="#b7">[8]</ref> with mean rotation R i R j and a concentration parameter κ &gt; 0. The probability density function of the von Mises-Fisher distribution for ¯ R ij is given by where c(κ) is a normalization constant. The parameters R i R j and 1/κ are analogous to μ (mean) and σ 2 (variance) of the normal distribution:</p><formula xml:id="formula_117">f ( ¯ R ij ; R i R j , κ) = c(κ) exp(κ Tr(R j R i ¯ R ij )),</formula><p>1. R i R j is a measure of location (the distribution is clustered around R i R j ). 2. κ is a measure of concentration (a reciprocal measure of dispersion, so 1/κ is analogous to σ 2 ).</p><p>If κ is zero, the distribution is uniform, and for small κ, it is close to uniform. If κ is large, the distribution becomes very concentrated about the rotation R i R j . In fact, as κ increases, the distribution approaches a normal distribution in ¯ R ij with mean R i R j and variance 1/κ.</p><p>For arbitrary fixed small &gt; 0, we can choose the concentration parameter κ large enough so that the condition (5.2) is satisfied. In fact, using Weyl integration formula (A.2), it can be shown that, when κ → ∞, In addition, we observe that when the concentration parameter κ is as large as 100, which means the perturbations on the 'good' edges are small, the critical probability p c for phase transition can be clearly identified around 0.5. As κ decreases, the phase transition becomes less obvious.</p><formula xml:id="formula_118">= E( ¯ R ij − R i R j ) = 2 πκ + O(κ −3/2 ), Var( ¯ R ij − R i R j ) = 1 − 2 π 1 κ + O(κ −2 ).</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.2">Experiments with incomplete measurements</head><p>In the experiments E3 and E4 shown in Figs 4 and 5, the measurements R ij are generated as in experi- ments E1 and E2, respectively, with the exception that instead of using the complete graph of measure- ments as in E1 and E2, the index set of measurements E is a realization of a random graph drawn from the Erd˝ os-Rényi model G (n, p 1 ), where p 1 is the proportion of measured rotation ratios. The results  <ref type="formula" target="#formula_75">(2)</ref> as a function of κ when p = 0.7 using LUD, EIG and SDP. The recovery by LUD is stable to small perturbations on the 'good' edges as indicated by the linear relationship of log(MSE) and log(κ). The green dotted line represents the Cramér-Rao bound for synchronization <ref type="bibr" target="#b4">[5]</ref>. demonstrate the exact recovery and stability of LUD with incomplete measurements that are described in Section 6.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="8.3">E5: Real data experiments</head><p>We tried LUD for solving the global alignment problem of three-dimensional scans from the Lucy dataset 7 (see <ref type="figure">Fig. 6</ref>). We are using a down-sampled version of the dataset containing 368 scans with a  <ref type="formula" target="#formula_75">(2)</ref> as a function of κ with different values of the edge probability p 1 and the 'good' edge probability p using LUD, EIG and SDP (E4). The recovery by LUD is stable to small perturbations on the 'good' edges as indicated by the linear relationship of log(MSE) and log(κ). The green dotted line represents the Cramér-Rao bound for synchronization <ref type="bibr" target="#b4">[5]</ref>. total number of 3.5 million triangles. Running the automatic Iterative Closest Point (ICP) algorithm <ref type="bibr" target="#b28">[28]</ref> starting from initial estimates returned 2006 pairwise transformations. For this model, we only have the best reconstruction found so far at our disposal but no actual ground truth. Nevertheless, we use this reconstruction to evaluate the error of the estimated rotations.</p><p>We apply the two algorithms LUD, EIG on the Lucy dataset since we observed that SDP did not per- form so well on this dataset. Although the MSEs are quite similar (0.4044 for LUD and 0.3938 for EIG), we observe that the unsquared residualsˆRresidualsˆ residualsˆR i − R i (i = 1, 2, . . . , 368), wherê R i is the estimated rotation, are more concentrated around zero for LUD <ref type="figure">(Fig. 7)</ref>. <ref type="figure">Figure 8</ref> suggests that the 'bad' edges (i, j) (edges with truly large measurement errors in the left sub-figure of <ref type="figure">Fig. 8</ref>) can be eliminated using the results of LUD more robustly, compared with that of EIG. We set the cutoff value to be 0.1 in <ref type="figure">Fig. 8</ref> for the estimated measurement errors obtained by LUD and EIG. Then 1527 and 1040 edges are retained from 2006 edges by LUD and EIG, respectively, and the largest connected component of the sparsified graph (after eliminating the seemingly 'bad' edges) has size 312 and 299, respectively. The three-dimensional scans with the estimated rotations in the largest component are used in the reconstruction. The recon- struction obtained by LUD is better than that by EIG <ref type="figure" target="#fig_9">(Fig. 9</ref>).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="9.">Summary</head><p>In this paper, we proposed to estimate the rotations using LUD. LUD minimizes a robust self- consistency error, which is the sum of unsquared residuals instead of the sum of squared residuals. LUD is then semidefinite relaxed and solved by the ADM. We compare the LUD method to the EIG and SDP methods, both of which are based on least squares approach, and demonstrate that the results obtained by LUD are the most accurate. When the noise in the rotation ratio measurements comes from the ER random graph model G(n, p), we compute an upper bound p c of the phase transition point such that the rotations can be exactly recovered when p &gt; p c . Moreover, the solution of LUD is stable when small perturbations are added to 'good' rotation ratio measurements. We also showed exact recovery and stability for LUD when the measurements of the rotation ratios are incomplete and the measured rotation ratios come from ER random graph model G(n, p 1 ).</p><p>The exact recovery result for the noise model (4.1) is actually not that surprising. In order to deter- mine if the rotation measurement for a given edge (i, j) is correct or noisy, we can consider all cycles of length three (triangles) that include that edge. There are n − 2 such triangles, and we can search for a consistent triangle by multiplying the three rotation ratios and checking if the product is the identity rotation. If there is such a consistent triangle, then the measurement for the edge (i, j) is almost surely correct. The expected number of such consistent triangles is (n − 2)p 2 , so the critical probability for such an algorithm is p c = O(1/ √ n), which is already significantly better than our exact recovery con- dition for LUD for which the critical probability does not depend on n. In fact, by considering all cycles of length k 3 consisting of a given fixed edge (there are O(n k−2 ) such cycles), the expected number of consistent cycles is O(n k−2 p k−1 ), therefore the critical probability is O(1/n 1−ε ) for any ε &gt; 0. Since exact recovery requires the graph of good edges be connected, and the ER graph is connected almost surely when p = 2 log n/n, the critical probability cannot be smaller than p = 2 log n/n. The computa- tional complexity of cycle-based algorithms increases exponentially with the cycle length, but already for short cycles (e.g. k = 3) they are preferable to LUD in terms of the critical probability. So what is the advantage of LUD compared with cycle-based algorithms? The answer to this question lies in our stability result. While LUD is stable to small perturbations on the good edges, cycle-based algorithms are unstable, and are therefore not as useful in applications where small measurement noise is present.</p><p>An iterative algorithm for robust estimation of rotations has been recently proposed in <ref type="bibr" target="#b16">[16]</ref> for appli- cations in computer vision. That algorithm aims to minimize the sum of geodesic distances between the measured rotation ratios and those derived from the estimated rotations. In each iteration, the algorithm sequentially updates the rotations by the median of their neighboring rotations using the Weiszfeld algorithm. We tested this algorithm numerically and find it to perform well, in the sense that its critical probability for exact recovery for the noise model (4.1) is typically smaller than that of LUD. However, the objective function that algorithm aims to minimize is not even locally convex. It therefore requires a good initial guess which can be provided by either EIG, SDP or LUD. In a sense, that algorithm may be regarded as a non-convex refinement algorithm for the estimated rotations. There is currently no the- oretical analysis of that algorithm due to the non-convexity and the non-smoothness of its underlying objective function.</p><p>In the future, we plan to extend the LUD framework in at least two ways. First, we plan to investigate exact and stable recovery conditions for more general (and possibly weighted) measurement graphs other than the complete and random ER graphs considered here. We speculate that the second eigenvalue of the graph Laplacian would play a role in conditions for exact and stable recovery, similar to the role it plays in the bounds for synchronization obtained in <ref type="bibr" target="#b3">[4]</ref>. Also in <ref type="bibr" target="#b10">[11]</ref>, for synchronization-like problems over SO(2), the error bounds are given in terms of the second eigenvalue of the graph Laplacian and the graph connection Laplacian of the measurements, which hold for general graphs. The solutions are obtained using a SDR, which is very similar to our LUD formulation. The only difference is that the sum of unsquared deviations is not used as a cost function; instead, it is used as a constraint, which yields a feasibility problem. Secondly, the problem of synchronization of rotations is closely related to the orthogonal Procrustes problem of rotating n matrices toward a best least-squares fit <ref type="bibr" target="#b38">[38]</ref>. A closed form solution is available only for n = 2, and a certain SDP relaxation for n 3 was analyzed in <ref type="bibr" target="#b26">[26]</ref>. The LUD framework presented here can be extended in a straightforward manner for the orthogonal Procrustes problem of rotating n matrices toward a best LUDs fit, which could be referred to as the robust orthogonal Procrustes problem. Similar to the measurement graph assumed in our theoretical analysis of LUD for robust synchronization, also in the Procrustes problem the measurement graph is the complete graph (all pairs of matrices are compared).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Supplementary Material</head><p>Supplementary Material is available at IMAIAI online.</p><formula xml:id="formula_119">= Tr(2I d − R − R ) = 2 Tr(I d − R),</formula><p>we have</p><formula xml:id="formula_120">c(d) = 1 d E Tr(I d − R) I d − R = 1 d E Tr(I d − R) √ 2Tr(I d − R) = 1 √ 2d E( Tr(I d − R)),</formula><p>where the probability measure for expectation is the Haar measure. The function f (R) = √ Tr(I d − R) is a class function, that is, f (R) is invariant under conjugation, meaning that, for all O, R ∈ SO(d), we have f (ORO ) = f (R). Therefore, E(f (R)) can be computed using the Weyl integration formula specialized to SO(d) [6, Exercise 18.1-18.2] as below:</p><formula xml:id="formula_121">SO(2m+1) f (R) dR = 1 2 m m! [−π,π] m f ⎛ ⎜ ⎜ ⎜ ⎜ ⎜ ⎜ ⎜ ⎝ ⎛ ⎜ ⎜ ⎜ ⎜ ⎜ ⎜ ⎜ ⎝ cos θ 1 − sin θ 1 sin θ 1 cos θ 1 . . . cos θ m − sin θ m sin θ m cos θ m 1 ⎞ ⎟ ⎟ ⎟ ⎟ ⎟ ⎟ ⎟ ⎠ ⎞ ⎟ ⎟ ⎟ ⎟ ⎟ ⎟ ⎟ ⎠ × i&lt;j (|e θ i − e θ j | 2 |e θ i − e − θ j | 2 ) i |e θ i − 1| 2 dθ 1 · · · dθ m , ( A . 1 ) 180 LANHUI WANG AND AMIT SINGER SO(2m) f (R) dR = 1 2 m−1 m! [−π,π] m f ⎛ ⎜ ⎜ ⎜ ⎜ ⎜ ⎝ ⎛ ⎜ ⎜ ⎜ ⎜ ⎜ ⎝ cos θ 1 − sin θ 1 sin θ 1 cos θ 1 . . . cos θ m − sin θ m sin θ m cos θ m ⎞ ⎟ ⎟ ⎟ ⎟ ⎟ ⎠ ⎞ ⎟ ⎟ ⎟ ⎟ ⎟ ⎠ × i&lt;j (|e θ i − e θ j | 2 |e θ i − e − θ j | 2 ) dθ 1 · · · dθ m . ( A . 2 )</formula><p>In particular, for d = 2 or 3 (m = 1), using the Weyl integration formula, we obtain</p><formula xml:id="formula_122">c(2) = 1 2 √ 2 E( Tr(I 2 − R)) = 1 2 √ 2 · 1 2π π −π Tr I 2 − cos θ − sin θ sin θ cos θ dθ = 1 4π π −π √ 1 − cos θ dθ = 1 2π π 0 √ 1 − cos θ dθ (let x = cos θ ) = 1 2π 1 −1 1 √ 1 + x dx = √ 2/π and c(3) = 1 3 √ 2 E( Tr(I 3 − R)) = 1 3 √ 2 · 1 2π π −π Tr ⎛ ⎝ I 3 − ⎛ ⎝ cos θ − sin θ 0 sin θ cos θ 0 0 0 1 ⎞ ⎠ ⎞ ⎠ (1 − cos θ) dθ = 1 3π π −π √ 1 − cos θ(1 − cos θ) dθ = 2 √ 2 3π π 0 sin θ 2 1 − cos 2 θ 2 dθ let x = cos θ 2 = 4 √ 2 3π 1 0 (1 − x 2 ) dx = 8 √ 2 9π .</formula><p>For d 4, the computation of c(d) involves complicated multiple integrals. Now we study the lower and upper bound and the limiting value of c(d) for large d.</p><formula xml:id="formula_123">Lemma A.1 1/2 √ 2d/2 c(d) 1/ √ 2d,</formula><p>where ·· denotes the floor of a number.</p><p>Proof. Using the fact that the square root function is concave, we obtain</p><formula xml:id="formula_124">c(d) = 1 √ 2d E( Tr(I d − R)) 1 √ 2d E(Tr(I d − R)) = √ d √ 2d = 1 √ 2d ,</formula><p>where the second equality uses the fact that Tr(R) = 0 due to the symmetry of the Haar measure.</p><formula xml:id="formula_125">Since d − 4d/2 Tr(R) d, we have 0 Tr(I d − R) 4d/2. ( A . 3 )</formula><p>In the range (A.3),</p><formula xml:id="formula_126">√ Tr(I d − R) (1/2 √ d/2) Tr(I d − R)</formula><p>due to the concavity of the square root function. Therefore, we obtain</p><formula xml:id="formula_127">c(d) = 1 √ 2d E( Tr(I d − R)) 1 2d √ d/2 E(Tr(I d − R)) = d 2d √ d/2 = 1 2 √ d/2 .</formula><p>Remark A.1 The upper bound of c(d) is very close to c(d) for d = 2, 3 and 4:</p><formula xml:id="formula_128">1 2 √ 2 (≈ 0.3536) c(2) = √ 2 π (≈ 0.4502) 1 2 , 1 2 √ 2 (≈ 0.3536) c(3) = 8 √ 2 9π (≈ 0.4001) 1 √ 6 ≈ 0.4082 , 0.25 = 1 4 c(4)(≈ 0.3505) 1 2 √ 2 (≈ 0.3536).</formula><p>In fact, we can prove the following lemma.</p><formula xml:id="formula_129">Lemma A.2 lim d→∞ √ 2dc(d) = 1.</formula><p>Proof. We have</p><formula xml:id="formula_130">1 √ 2dc(d) = 1 √ d E( Tr(I d − R)) 1 √ d P(|Tr(R)| d 1/4 ) d − d 1 4 , ( A . 4 )</formula><p>where the first inequality follows Lemma A.1. Diaconis and Mallows <ref type="bibr" target="#b11">[12,</ref><ref type="bibr" target="#b12">13]</ref> showed that the moments of the trace of R equal the moments of a standard normal variable for all sufficiently large n. In particular, when d → ∞, the limit of Tr(R) has mean 0 and variance 1. Therefore, using Chebyshev inequality, we obtain that</p><formula xml:id="formula_131">P(|Tr(R)| d 1/4 ) → 1 as d → ∞. ( A . 5 ) Hence letting d → ∞ in (A.4), we obtain lim d→∞ √ 2dc(d) = 1.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix B. Proof of Lemma 4.9</head><p>Here we aim to prove that the limiting spectral density of the normalized random matrix (1/ √ n − 1)D is Wigner's semi-circle, where D is defined in <ref type="bibr">(4.20)</ref>. The following definitions and results will be used.</p><p>• The Cauchy (Stieltjes) transform of a probability measure μ and moments {m k } ∞ k=1 is given by</p><formula xml:id="formula_132">G μ (z) = R dμ(x) z − x = 1 z + ∞ k=1 m k z k+1 , z ∈ C, Im(z) &gt; 0.</formula><p>• The density g(x) can be recovered from G μ by the Stieltjes inversion formula:</p><formula xml:id="formula_133">g(x) = − 1 π lim →0 Im(G μ (x + )).</formula><p>• The Wigner semi-circle distribution μ 0,σ 2 centred at 0 with variance σ 2 is the distribution with density</p><formula xml:id="formula_134">g(x) = ⎧ ⎪ ⎨ ⎪ ⎩ √ 4σ 2 − x 2 2πσ 2 if x ∈ [−2σ , 2σ ], 0</formula><p>otherwise.</p><p>• The Cauchy transform of the semi-circle distribution μ 0,σ 2 is given by</p><formula xml:id="formula_135">G μ 0 ,σ 2 (z) = z − √ z 2 − 4σ 2 2σ 2 .</formula><p>We now state a theorem by Girko, which extends the semi-circle law to the case of random block matrices, and show how, in particular, this follows for the random matrix</p><formula xml:id="formula_136">(1/ √ n)D.</formula><p>Theorem B.1 (Girko <ref type="bibr" target="#b14">[14]</ref>) Suppose that the nd × nd matrix M is composed of d × d independent random blocks M ij , i, j = 1, 2, . . . , n, which satisfy</p><formula xml:id="formula_137">M ij = M ji , E(M ij ) = O d , EM ij 2 &lt; ∞. ( B . 1 ) Suppose also that sup n max i=1,2,...,n n j=1 EM ij 2 &lt; ∞ (B.2)</formula><p>and that Lindeberg's condition holds: for every &gt; 0</p><formula xml:id="formula_138">lim n→∞ max i=1,2,...,n n j=1 E(M ij 2 X (M ij &gt;&gt;) ) = 0, (B.3)</formula><p>where X denotes an indicator function. Let λ 1 · · · λ nd be the eigenvalues of M and let μ n (x) = (1/nd) nd l=1 X (λ l &lt;x) be the eigenvalue measure. Then, for almost any x,</p><formula xml:id="formula_139">|μ n (x) − F n (x)| → 0 as n → ∞ a.s.,</formula><p>where F n (x) are the distribution functions whose Cauchy/Stieltjes transforms are given by</p><formula xml:id="formula_140">(1/nd) n i=1 Tr(C i (z)),</formula><p>where the matrices C i (z)satisfy</p><formula xml:id="formula_141">C i (z) = ⎛ ⎝ E ⎛ ⎝ zI d − E n j=1 M ij C j (z)M ij ) ⎞ ⎠ −1 ⎞ ⎠ , i = 1, 2, . . . , n. ( B . 4 )</formula><p>The solution C i (z), i = 1, 2, . . . </p><formula xml:id="formula_142">W ij = ⎧ ⎪ ⎨ ⎪ ⎩ 1 √ n − 1 I d − R ij I d − R ij − c(d)I d w.p. 1 − p, 0 w . p . p, for i | = j, where R ij = R ji . Note that W is a random symmetric matrix (W ij = W ji ) with i.i.d. off-diagonal blocks. From the definition of c(d) it follows that E(W ij ) = 0. Also, W ij is finitely bounded, that is, W ij 2 = 1 n − 1 1 + c(d) 2 d − c(d) √ 2 Tr(I d − R ij ) 1 n − 1 (1 + c(d) 2 d).</formula><p>Therefore, all the conditions (condition (B.1-B.3)) of the theorem are satisfied by the matrix W . Before we continue, we need the following lemma.</p><p>Lemma B.1 We have E(</p><formula xml:id="formula_143">(I d − R)/I d − R 2 ) = (1/2d)I d and E((I d − R)/I d − R) = c(d)I d .</formula><p>Proof. Using the symmetry of the Haar measure on SO(d), we can assume that E((</p><formula xml:id="formula_144">I d − R)/ I d − R 2 ) = aI d and E((I d − R)/I d − R) = bI d</formula><p>, where a and b are constants depending on d. There- fore, we have</p><formula xml:id="formula_145">a = 1 d E Tr I d − R I d − R 2 = 1 d E Tr(I d − R) Tr((I d − R)(I d − R) ) = 1 d E Tr(I d − R) 2Tr(I d − R) = 1 2d and b = 1 d E Tr I d − R I d − R = c(d).</formula><p>We claim that</p><formula xml:id="formula_146">C i (z) = h(z)I d , where h(z) is a function of z. In fact, E n j=1 W ij C j (z)W ij = h(z)E n j=1 W ij W ij = (1 − p)h(z)E I d − R I d − R − c(d)I d I d − R I d − R − c(d)I d = (1 − p)h(z)E 2I d − R − R I d − R 2 − 2c(d) I d − R I d − R + c(d) 2 I d = (1 − p)h(z) 1 d I d − 2c(d) 2 I d + c(d) 2 I d = (1 − p)h(z) 1 d − c(d) 2 I d ,</formula><p>where the fourth equality uses Lemma B.1. From (B.4), we obtain</p><formula xml:id="formula_147">h(z)I d = zI d − (1 − p)h(z) 1 d − c(d) 2 I d −1</formula><p>, that is,</p><formula xml:id="formula_148">(1 − p) 1 d − c(d) 2 h(z) 2 − zh(z) + 1 = 1,</formula><p>which reduces to</p><formula xml:id="formula_149">h(z) = z ± z 2 − 4(1 − p)(1/d − c(d) 2 ) 2(1 − p)(1/d − c(d) 2 ) .</formula><p>The uniqueness of the solution now implies that the Cauchy transform of</p><formula xml:id="formula_150">F n (x) is 1 nd n i=1 Tr(C i (z)) = h(z) = z − z 2 − 4(1 − p)(1/d − c(d) 2 ) 2(1 − p)(1/d − c(d) 2 ) ,</formula><p>where we select the − branch according to the properties of the Cauchy transform. This is exactly the Cauchy transform of the semi-circle law with support [−2</p><formula xml:id="formula_151">(1 − p)(1/d − c(d) 2 ), 2 (1 − p)(1/d − c(d) 2 )].</formula><p>Hence, for large n the eigenvalues of D are distributed according to the semi-circle law with support</p><formula xml:id="formula_152">−2 (1 − p) 1 d − c(d) 2 (n − 1), 2 (1 − p) 1 d − c(d) 2 (n − 1)</formula><p>.</p><p>Thus, the limiting spectral density of (1/ √ n − 1)D is Wigner's semi-circle. Since any symmetric matrix can be decomposed into a superposition of a PSD matrix and a negative-definite matrix (this follows immediately from the spectral decomposition of the matrix), the matrix D can be decomposed as</p><formula xml:id="formula_153">D = D + + D − ,</formula><p>where D + 0 and D − ≺ 0. Clearly,</p><formula xml:id="formula_154">D 2 = =D + 2 + +D − 2 ,</formula><p>and since the limiting spectral density of (1/ √ n − 1)D is Wigner's semi-circle that is symmetric around 0, we have</p><formula xml:id="formula_155">D + 2 ≈ ≈D − 2 ≈ 1 2 D 2 .</formula><p>From the law of large numbers we obtain that D 2 is concentrated at</p><formula xml:id="formula_156">D 2 ≈ (1 − p)n(n − 1)E I d − R ij I d − R ij − c(d)I d 2 = (1 − p)n(n − 1) 1 + c(d) 2 d − 2c(d)E Tr I d − R I d − R = (1 − p)n(n − 1)(1 − c(d) 2 d). Hence, D + 2 ≈ ≈D − 2 ≈ 1 2 (1 − p)n(n − 1)(1 − c(d) 2 d).</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix C. Proof of Lemma 4.10</head><p>We have already shown that the gain from Q is at most O P ( n log n) n i=1 Q 1 ii . Now we will show that the gain from Q is less than the sum of O P ( n log n) Tr(T) and the loss in the off-diagonal entries of Δ ij for (i, j) ∈ E c , specifically speaking,</p><formula xml:id="formula_157">O P ( n log n) n i=1 Q 1 ii O P ( n log n) Tr(T) + d 2 pn O P ( n log n) (i,j)∈E c Δ off ij , (C.1)</formula><p>which is equivalent to proving Lemma 4.10. A matrix is skew-symmetric if X = −X . Every matrix X can be written as the sum of a symmetric matrix and a skew-symmetric matrix: X = (X + X )/2 + (X − X )/2. We will call the first term the symmetric part and the second term the skew-symmetric part. Recall that Q 1 is a matrix with identical columns (Q 1 ji = Q 1 ii ). We denote the symmetric part and the skew-symmetric part of Q 1 ji as</p><formula xml:id="formula_158">Q 1,s i = Q 1 ii + Q 2 ii 2 = − T ii + P ii 2 (C.2) and Q 1,ss i = Q 1 ii − Q 2 ii 2 , ( C . 3 )</formula><p>respectively. Then we have</p><formula xml:id="formula_159">Q 1 ii = =Q 1,s i + Q 1,ss i Q 1,s i + +Q 1,ss i . ( C . 4 )</formula><p>Later we will see that the skew-symmetric part Q 1,ss i is exactly what is causing troubles. Before dealing with the trouble, let us first handle the symmetric part Q 1,s i . For the symmetric part Q 1,s i we have</p><formula xml:id="formula_160">n i=1 Q 1,s i = 1 2 n i=1 T ii + P ii 1 2 n i=1 T ii + n i=1 P ii = 1 2 n i=1 T ii + n i=1 T ii n i=1 T ii n i=1 Tr(T ii ) = Tr(T), ( C . 5 )</formula><p>where the second equality uses Lemma 4.2 and the third inequality uses the fact that T ii 0 and that, for any matrix X 0, X Tr(X ). Let us consider now the skew-symmetric part Q 1,ss i . For any index p, q ∈ {1, 2, . . . , d}, consider n i=1 |Q 1,ss i (p, q)|, where Q 1,ss i (p, q) is the (p, q)th entry of the matrix Q 1,ss i . Without loss of general- ity and for the purpose of simplicity, let us assume that i |Q 1,ss i (p, q)| is largest when p = 1 and q = 2 (The diagonal entries will not be the largest, because they have to be 0.). Now we know</p><formula xml:id="formula_161">n i=1 Q 1,ss i d 2 n i=1 |Q 1,ss i (1, 2)|. ( C . 6 )</formula><p>This is just because Q 1,ss i has d 2 entries. Thus, later we will just care about Q 1,ss i (1, 2) and Q 1,ss i (2, 1). We define the matrices Q 1,s , Q 1,ss , Q 2,s and Q 2,ss as</p><formula xml:id="formula_162">Q 1,s ij = Q 1,s j , Q 1,ss ij = Q 1,ss j , Q 2,s ij = Q 1,s i , Q 2,ss ij = −Q 1,ss i</formula><p>for all i and j, ( C . 7 )</p><p>and the matrix Q s = Q 1,s + Q 2,s and Q ss = Q 1,ss + Q 2,ss . Thus, it is easy to see Q = Q s + Q ss . Restrict the matrices P, Q, T and so on to the good entries and obtain P c , Q c , T c and so on (which means, for example, when</p><formula xml:id="formula_163">(i, j) / ∈ E c , set the (i, j)'s block P c (i, j) = 0; when (i, j) ∈ E c , keep P c (i, j) = P(i, j)).</formula><p>Then we can prove the following lemmas.</p><p>Lemma C.1 Let the vectors s 1 , s 2 ∈ R nd be defined as in (4.6), that is,</p><formula xml:id="formula_164">s 1 = (1, 0, 0, . . . 0, 1, 0, 0, . . . , 0, . . . . . . , 1, 0, 0, . . . , 0) , s 2 = (0, 1, 0, . . . 0, 0, 1, 0, . . . , 0, . . . . . . , 0, 1, 0, . . . , 0) .</formula><p>And define the vectors a 1 , a 2 ∈ R nd as follows:</p><formula xml:id="formula_165">a l (m) = ⎧ ⎪ ⎪ ⎨ ⎪ ⎪ ⎩ 1 ifm = d · i + l and Q 1,ss i (p, q) &gt; 0, −1 if m = d · i + l and Q 1,ss i (p, q) &lt; 0, 0 otherwise, for l = 1, 2. (C.8)</formula><p>Then we have the following inequality:</p><formula xml:id="formula_166">s 1 (P c + Q c )a 2 − s 2 (P c + Q c )a 1 (Ω(pn) − O P ( n log n)) n i=1 |Q 1,ss i (1, 2)|. ( C . 9 )</formula><p>Proof. First, note that, for any matrix X ∈ R nd×nd , s 1 X a 2 − s 2 X a 1 is the sum of the differences between X ij (1, 2) and X ij (2, 1). Thus, it is easy to verify that the symmetric matrix P c and the sym- metric parts Q 1,s i and Q 2,s i in Q s c contribute 0 to the LHS of (C.9), that is, and Q 2,ss c , we only look at their entry at index (1, 2). Owing to the definition in (C.7) and (C.8), we have </p><formula xml:id="formula_167">s 1 (P c + Q c )a 2 − s 2 (P c + Q c )a 1 = s 1 Q ss</formula><formula xml:id="formula_168">s 1 Q 1,ss c a 2 = (i,j)∈E c Q 1,ss ij (1, 2) sign(Q 1,ss j (1, 2)) = (i,j)∈E c |Q 1,ss i (1, 2)| (C.11) Fig. A1. Two n × n matrices. The matrix M a is defined as M a (i, j) = |Q 1,ss i (1, 2)| if (i, j) ∈ E c , otherwise M a (i, j) = 0. The matrix M b is defined as M b (i, j) = −Q 1,ss i (1, 2) sign(Q 1,ss j (1, 2)) if (i, j) ∈ E c , otherwise M b (i, j) = 0.</formula><formula xml:id="formula_169">s 1 Q 2,ss c a 2 = (i,j)∈E c Q 2,ss ij (1, 2) sign(Q 1,ss j (1, 2)) = (i,j)∈E c −Q 1,ss i (1, 2) sign(Q 1,ss j (1, 2)). (C.12)</formula><p>Without loss of generality and for the purpose of simplicity, we assume that there is an integer i 0 such that Q 1,ss i 0 when i i 0 and Q 1,ss i &lt; 0 when i &gt; i 0 . Then the RHS of (C.11) and (C.12) can be repre- sented as sums of the entries (i, j) ∈ E c of the n × n matrices in <ref type="figure" target="#fig_3">Fig. A1(a,b)</ref>, respectively. Apparently in some parts, even if there is an edge in E c things will cancel (these are the parts that are marked negative in <ref type="figure" target="#fig_3">Fig. A1(b)</ref>). But in the parts that are marked positive in <ref type="figure" target="#fig_3">Fig. A1(b)</ref>, if there is an edge in E c , things will not cancel and will indeed contribute to s 1 Q ss c a 2 . In fact, the contribution of '+' regions is at least</p><formula xml:id="formula_170">(Ω(pn) − O P ( n log n)) n i=1 |Q 1,ss i (1, 2)|( 2s 1 Q ss c a 2 ), (C.13)</formula><p>where we use Lemma C.3 and the fact that</p><formula xml:id="formula_171">Q ss i (1,2)&gt;0 Q ss i (1, 2) = − Q ss i (1,2)&lt;0 Q ss i (1, 2) = n i=1 |Q ss i (1, 2)|/2.</formula><p>Combine (C.10) and (C.13) together and we obtain (C.9).</p><p>To verify that the contribution of '+' regions is lower bounded by (C.13), we first assume that in <ref type="figure" target="#fig_3">Fig. A1</ref>, every good edge in the '+' area of (b) contributes the same amount (that corresponds to Q 1,ss i (1, 2) has the same absolute value for all i), then there are two cases:</p><p>1. The rectangle has large area; in this case we will show ALL large rectangles have a large number of good edges.</p><p>2. The rectangle has small area; in this case the '+' area must be very wide (in order to have small area, it must be a q × (n − q) rectangle where q is very small), in fact its width (n − q) will be much wider than n/2, and will even be wider than (1 − p)n (where p is the probability of a good edge), so there must be many good edges inside the rectangle.</p><p>Lemma C.2 Let p be the probability of a good edge. When p &gt; log C n for some fixed constant C, with high probability for any set S 1 , S 2 ⊂ {1, 2, . . . , n}, where |S 1 | = q and |S 2 | n − C 2 q (C 2 = 16 should be good enough), the number of good edges in S 1 × S 2 is at least C 3 p|S 1 ||S 2 | (C 3 is some universal constant, and can be 1/4).</p><p>Proof. With high probability every vertex has at least pn/2 good edges, and so when C 2 q &lt; pn/4, the Lemma holds trivially.</p><p>When C 2 q pn/4, use the Chernoff bound. Fix the size of S 1 and S 2 , for any particular S 1 , S 2 , the probability that the number of good edges is too small is bounded by</p><formula xml:id="formula_172">e −Ω((1−C 3 )p|S 1 ||S 2 |/ √ p|S 1 ||S 2 |) 2 = e −Ω(pqn) .</formula><p>On the other hand, the number of such pairs S 1 , S 2 is at most n q · n C 2 q = e O(q log n) ; by union bound the probability that there exists a bad pair is very small (because q log n pqn). Now we are essentially done if all the positive entries of Q 1,ss i (1, 2) are of similar size. We are not really done because of the following bad case: One of Q 1,ss i (1, 2) is very large, the others are small. Now although there are many good edges in the '+' region, their real contribution depends on how many of the good edges belong to the vertex with large Q 1,ss i (1, 2). Thus, we need to group positive entries of Q 1,ss i (1, 2) according to their value, and apply Lemma C.2 to different groups. Proof. Assume without loss of generality that the number of negative entries in Q 1,ss i (1, 2) is &lt; n/2 (otherwise taking −Q, the loss will be the same).</p><p>Let N be the set of non-negative entries of Q 1,ss i (1, 2). Let m be the minimum entry in Q 1,ss i (1, 2) (which is negative). Let S j (j 0) be the set of entries that are between [m · 2 −j , m · 2 −j−1 ).</p><p>We shall consider the rectangles S j × ({1, 2, . . . , n} − S j−1 − S j − S j+1 ); we would like to show that the number of good edges in all these rectanglesis at least C 3 p|S j | · n/2 (the second set is larger than n/2 because it contains N), and each of these good edges will contribute at least −m · 2 −j−2 (remember m is negative). In fact, these edges must be from S j to something in S j−2 or S j+2 or even farther index, the difference between any entry in S j and any entry in those sets are at least 2 −j−2 , thus they will not cancel out completely. Therefore, the total contribution will be at least j0 C 3 p|S j | · n/2 · (−m) · 2 −j−2 (Ω(pn) − O P ( n log n)) Q 1,ss i (1,2)&lt;0 −Q 1,ss i (1, 2).</p><p>We can show that there are many good edges by Lemma C.2; the only thing we need to guarantee is that the second set {1, 2, . . . , n} − S j−1 − S j − S j+1 is large enough.</p><p>When {1, 2, . . . , n} − S j−1 − S j − S j+1 is small, there are two possibilities here:</p><p>1. |S j−1 | might be larger than C 2 |S j |/2, but in this case the sum of entries in S j−1 is constant times larger than S j ; thus we can ignore S j .</p><p>2. |S j+1 | might be larger than C 2 |S j |/2, but we have chosen C 2 to be large enough, and so, in this case, the sum of entries in S j+1 is also constant times larger than S j ; thus we can ignore S j .</p><p>To clarify points 1 and 2, let h(j) be the absolute value of sum of entries in S j , i.e.</p><formula xml:id="formula_173">h(j) = Q 1,ss i (1,2)&lt;0,i∈S j −Q 1,ss i (1, 2). (C.15)</formula><p>We will show that the contributions from the rectangles are at least (Ω(pn) − O P ( n log n) j h(j).</p><p>Points 1 and 2 say that if h(j) is at most h(j + 1)/2 or h(j − 1)/2, then we ignore h(j). This is fine because if we look at a h(j) that is not ignored (there must be such sets, otherwise the sum of h(j) will be infinity), it can only be responsible for h(j − 1), h(j − 2), . . . and h(j + 1), h(j + 2), . . .. And we know h(j − t) 2 −t h(j) and h(j + t) 2 −t h(j) (because they are all ignored). The sum of all these h(j − t)'s and h(j + t)'s are bounded by constant times h(j).</p><p>Lemma C.4 Defining two sets as S 1 = {i = 1, 2, . . . , n||Q 1,ss i } and S 2 = {i = 1, 2, . . . , n||Q 1,ss i = O(()}, then, from (D.5), we obtain Q ss ij ≈ Q 1,ss i , if i ∈ S 1 and j ∈ S 2 .</p><p>The set S 1 is assumed to be not empty; otherwise it is easy to see Q 2 = O P (n 2 2 ) and thus Δ 2 = O P (n 2 2 ). In addition, #S 1 n since i Q 1,ss i = O(n). For every i, #{j|(i, j) ∈ E c , (I d − R ij ) off /(I d − R ij ) off , Q 1,ss i &lt; 0} c 9 pn; thus, for every i ∈ S 1 we have # j|(i, j) ∈ E c , j ∈ S 2 , (I d − R ij ) off </p><formula xml:id="formula_174">(I d − R ij ) off ,<label>Q 1</label></formula><formula xml:id="formula_175">O P (n)) 2 + nO P (( 2 ) = O P (n)) 2 .</formula><p>This, together with the decomposition (5.7) and arguments similar to (C.2-C.5), completes the proof.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Remark 4 .</head><label>4</label><figDesc>2 The matrix A is the adjacency matrix of the Erd˝ os-Rényi (ER) random graph model G (n, p) where the expectation of every node's degree is (n − 1)p. Denote by λ i the ith largest eigen- value of a matrix. It is intuitive to see that λ 1 (A) ≈ (n − 1)p and the first eigenvector is approximately the all-ones vector 1, and λ</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Lemma 4 .</head><label>4</label><figDesc>9 The limiting spectral density of (1/ √ n − 1)D is Wigner's semi-circle. In addition, the matrix D can be decomposed as D = D + + D − , where D + 0 and D − ≺ 0, and we have</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head></head><label></label><figDesc>5.3) Applying Lemma 4.11 to (4.28) and (4.29), and setting α = √ 1 − 0 and β = √ 0 , where 0 p − p c ,</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Fig. 1 .</head><label>1</label><figDesc>Fig. 1. The MSE (8.2) of the estimated rotations in SO(3) and SO(2) using EIG, SDP and LUD for different values of n and p in E1. Exact Recovery (i.e. log 10 (MSE) &lt; −7) is achieved by LUD. (a) SO(2) and (b) SO(3).</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Fig. 2 .</head><label>2</label><figDesc>Fig. 2. The MSE (8.2) of the estimated rotations in SO(2) using EIG, SDP and LUD for 100 and 500 rotations and different values of p and concentration parameter κ in E2. LUD is stable when there are small perturbations on the 'good' edge set. (a) n = 100 and (b) n = 500.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Fig. 3 .</head><label>3</label><figDesc>Fig. 3. The MSE of n = 100 estimated rotations in SO(2) as a function of κ when p = 0.7 using LUD, EIG and SDP. The recovery by LUD is stable to small perturbations on the 'good' edges as indicated by the linear relationship of log(MSE) and log(κ). The green dotted line represents the Cramér-Rao bound for synchronization [5].</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Fig. 4 .</head><label>4</label><figDesc>Fig. 4. Phase transitions of LUD on incomplete graphs (E3). The color intensity of each pixel represents log(MSE), depending on the edge probability p 1 (x-axis) and the 'good' edge probability p (y-axis). The blue curves are the upper bounds of the critical probability p c (d, p 1 ) in Theorem 6.1. Both experiments used n = 500 rotations.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Fig. 5 .</head><label>5</label><figDesc>Fig. 5. The MSE of n = 500 estimated rotations in SO(2) as a function of κ with different values of the edge probability p 1 and the 'good' edge probability p using LUD, EIG and SDP (E4). The recovery by LUD is stable to small perturbations on the 'good' edges as indicated by the linear relationship of log(MSE) and log(κ). The green dotted line represents the Cramér-Rao bound for synchronization [5].</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>Fig. 6 .Fig. 7 .Fig. 8 .</head><label>678</label><figDesc>Fig. 6. The Lucy statue.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><head>Fig. 9 .</head><label>9</label><figDesc>Fig. 9. Front and back views of the reconstructions from the Lucy dataset. The left one is the best found reconstruction. The middle and right ones are obtained by LUD and EIG.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_10"><head></head><label></label><figDesc>, n, to (B.4) exists and is unique in the class of analytic d × d matrix functions C(z) for which Im(z) Im(C(z)) &lt; 0, Im(z) | = 0. Now we apply the result of the theorem on the matrix W = (1/ √ n − 1)D whose d × d blocks satisfy</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_11"><head></head><label></label><figDesc>Fig. A1. Two n × n matrices. The matrix M a is defined as M a (i, j) = |Q 1,ss i (1, 2)| if (i, j) ∈ E c , otherwise M a (i, j) = 0. The matrix M b is defined as M b (i, j) = −Q 1,ss i (1, 2) sign(Q 1,ss j (1, 2)) if (i, j) ∈ E c , otherwise M b (i, j) = 0. With the assumption that there is an integer i 0 such that Q 1,ss i</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0" validated="false"><head>,...,d , and T pq = (T, where T ij are T's d × d sub-blocks and T pq are T's n × n sub-matrices whose entries are the (p, q)th elements of the sub-blocks T ij . Recall that G ij = I d . Denote the objective function by F, that is,</head><label></label><figDesc></figDesc><table>pq 
+
+ij ) i,j=1,...,n </table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1" validated="false"><head>Lemma 4 .11 If i |a i | a and i |b i | b, then, for any α, β &gt; 0 such that α 2 + β 2 = 1, we have i a 2 i + b 2 i αa + βb.</head><label>4</label><figDesc></figDesc><table>Applying Lemma 4.11 to (4.28) and (4.29)</table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2" validated="false"><head>Table 1 The Relative Error (8.1) of the Gram matrixˆGmatrixˆ matrixˆG obtained by LUD in E1. The critical probability where the Gram matrix G can be exactly recovered is upper bounded by p c (2) ≈ 0.4570, p c (3) ≈ 0.4912 when n is large enoughis the total number of rotations and p is</head><label>1</label><figDesc>the proportion of good rotation ratio measurements. We define the relative error of the estimated Gram matrixˆGmatrixˆ matrixˆG as</figDesc><table>p 
+
+</table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3" validated="true"><head>Table 2 The MSE (8.2) of the estimated rotations in SO(2) using EIG, SDP and LUD in E1. The critical probability where the rotations can be exactly recovered is upper bounded by p c (2) ≈ 0.4570 when n is large enough</head><label>2</label><figDesc></figDesc><table>p 
+0.7 
+0.6 
+0.5 
+0.4 
+0.3 
+0.2 
+(a) n = 100 
+EIG 
+0.0064 
+0.0115 
+0.0222 
+0.0419 
+0.0998 
+0.4285 
+SDP 
+0.0065 
+0.0116 
+0.0225 
+0.0427 
+0.1014 
+0.3971 
+LUD 
+1.7e−07 
+4.7e−08 
+8.4e−05 
+0.0043 
+0.0374 
+0.3296 
+(b) n = 500 
+EIG 
+0.0012 
+0.0023 
+0.0040 
+0.0077 
+0.0163 
+0.0445 
+SDP 
+0.0012 
+0.0023 
+0.0041 
+0.0078 
+0.0164 
+0.0440 
+LUD 
+6.4e−10 
+5.5e−09 
+9.6e−09 
+6.3e−05 
+0.0025 
+0.0211 
+(c) n = 1000 
+EIG 
+0.0006 
+0.0011 
+0.0020 
+0.0037 
+0.0080 
+0.0207 
+SDP 
+0.0006 
+0.0011 
+0.0020 
+0.0037 
+0.0081 
+0.0207 
+LUD 
+3.0e−10 
+1.5e−09 
+7.3e−09 
+7.5e−06 
+0.0010 
+0.0084 
+
+Table 3 The MSE (8.2) of the estimated rotations in SO(3) using EIG, SDP and LUD in 
+E1. The critical probability where the rotations can be exactly recovered is upper bounded by 
+p c (3) ≈ 0.4912 when n is large enough 
+
+p 
+0.7 
+0.6 
+0.5 
+0.4 
+0.3 
+0.2 
+(a) n = 100 
+EIG 
+0.0063 
+0.0120 
+0.0224 
+0.0435 
+0.0920 
+0.3716 
+SDP 
+0.0064 
+0.0122 
+0.0233 
+0.0452 
+0.0968 
+0.4040 
+LUD 
+1.0e−09 
+6.4e−07 
+4.1e−04 
+0.0094 
+0.0461 
+0.2700 
+
+(b) n = 500 
+EIG 
+0.0012 
+0.0023 
+0.0041 
+0.0080 
+0.0164 
+0.0442 
+SDP 
+0.0012 
+0.0023 
+0.0041 
+0.0080 
+0.0165 
+0.0447 
+LUD 
+4.7e−11 
+1.8e−10 
+2.1e−09 
+0.0006 
+0.0061 
+0.0295 
+
+(c) n = 1000 
+EIG 
+0.0006 
+0.0011 
+0.0020 
+0.0037 
+0.0079 
+0.0208 
+SDP 
+0.0006 
+0.0011 
+0.0020 
+0.0038 
+0.0079 
+0.0209 
+LUD 
+2.5e−11 
+2.4e−10 
+8.0e−10 
+0.0001 
+0.0026 
+0.0131 
+
+8.1.2 E2: Stability of LUD In this experiment, the three algorithms are used to recover rotations in 
+SO</table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4" validated="false"><head>1,ss c + Q 2,ss c )a 2 . For each of the sub- matrices of Q 1,ss c</head><label></label><figDesc></figDesc><table>c a 2 − s 
+2 Q ss 
+c a 1 = 2s 
+1 Q ss 
+c a 2 , 
+(C.10) 
+
+where the second equality uses the fact that −s 
+2 Q ss 
+c a 1 = s 
+1 Q ss 
+c a 2 due to the skew-symmetry of the 
+submatrices of Q ss 
+c . Now we just need to focus on s 
+1 Q ss 
+c a 2 = s 
+1 (Q </table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_6" validated="false"><head>n i=1 Q 1,ss i d 2 Ω(pn) − O P ( n log n) ⎛ ⎝ (i,j)∈E c+ Q c + T c )a 2 − s 2 (P c + Q c + T c )a 1off ij is obtained by restricting Δ ij on the off-diagonal entries. In addition, we havej)∈E c l(Δ ij ), we have (i,j)∈E c l(Δ ij ) = (i,j)∈E c l(P ij + Q s ij + Q ss ij + T ij )c (P off ij + +T off ij + +Q s ij )− c 8 n Trc (I d − R ij + Q ss ij ) off − −(I d − R ij ) off − (I d − R ij ) off (I d − R ij ) off , Q ss ij , where l(Q ss ij ) 0 and Q ss ij = Q 1,ss i + Q 2,ss j = Q 1,ss i − Q 1</head><label></label><figDesc></figDesc><table>Δ off 
+ij + 
+
+n 
+2 
+Tr(T) 
+
+⎞ 
+
+⎠ . 
+(C.16) 
+
+Proof. We know that 
+
+s 
+1 (P c = s 
+1 Δ c a 2 − s 
+2 Δ c a 1 
+
+
+
+(i,j)∈E c 
+
+|Δ ij (1, 2)| + 
+
+
+(i,j)∈E c 
+
+|Δ ij (2, 1)| 
+
+2 
+
+
+(i,j)∈E c 
+
+Δ off 
+ij , 
+(C.17) 
+
+where Δ −s 
+1 T c a 2 
+
+i,j 
+
+|T ij (1, 2)| 
+1 
+2 
+
+i,j 
+
+(T ii (1, 1) + T jj (2, 2)) = 
+n 
+2 
+Tr(T), For the part 
+
+
+(i,(i,j)∈E c 
+
+l(Q ss 
+ij ) − 2 
+
+(i,j)∈E (i,j)∈E c 
+
+l(Q ss 
+ij ) (T). 
+( D . 4 ) 
+
+Now we consider 
+
+
+(i,j)∈E c 
+
+l(Q ss 
+ij ) = 
+
+(i,j)∈E ,ss 
+j . 
+( D . 5 ) 
+
+</table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_7" validated="false"><head>,ss i &lt; 0 c 9 pn − #S 1 c 10 pn. Thus,−R ij ) off /(I d −R ij ) off ,Q 1,ss2 i∈S 1 c 11 pnQ 1,ss i = c 12 n i∈S 112 n i∈S 1 Q 1,ss i − O P ( n log n) i Q 1 ii − c 13 n Tr− p c , then we obtainQ 1 ii − c 13 n Tr(T) . If f 1 + f 2 0, then G + Δ is not the minimizer. And f 1 + f 2 0 leads to the condition n i∈S 1Q 1 ii . Thus, if G + Δ is the minimizer, then Δ must satisfy the condition n i∈S 1</head><label></label><figDesc></figDesc><table>(i,j)∈E c 
+
+l(Q ss 
+ij ) 2 
+
+(i,j)∈E c ∩(S 1 ×S 2 ) 
+
+l(Q ss 
+ij ) 
+
+2 
+
+
+i∈S 1 
+
+j∈ 
+
+
+j|(i,j)∈E c ,j∈S 2 , 
+
+
+(I d i 
+
+
+&lt;0 
+
+
+l(Q ss 
+ij ) 
+
+Q 1,ss 
+i . 
+( D . 6 ) 
+
+Combining (D.2-D.4) and (D.6) together, we obtain 
+
+f off 
+2 c (T). 
+( D . 7 ) Applying Lemma 4.11 to (D.1) and (D.7), and setting α = 
+√ 
+1 − 0 and β = 
+√ 
+0 , where 0 p f 2 
+
+1 − 0 f d 
+2 + 
+
+√ 
+0 f off 
+
+2 
+
+
+
+1 − 0 
+
+
+pn 
+√ 
+d 
+− O P ( 
+
+n log n) 
+
+Tr(T) 
+
++ 
+√ 
+0 
+
+c 12 n 
+
+
+i∈S 1 
+
+Q 1,ss 
+i − O P ( 
+
+
+n log n) 
+
+
+i 
+
+Q 1,ss 
+i O P ( 
+
+√ 
+n) 
+
+
+i 
+
+Q 1,ss 
+i O P ( 
+
+√ 
+n) 
+
+
+i 
+
+Q 1 
+ii O P (n 
+
+√ 
+n)), 
+
+that is, 
+
+
+i∈S 1 
+
+Q 1,ss 
+i O P ( 
+
+√ 
+n)); 
+
+therefore 
+
+
+i 
+
+Q 1,ss 
+i 2 = 
+
+i∈S 1 
+
+Q 1,ss 
+i 2 + 
+
+i∈S 2 
+
+Q 1,ss 
+i 2 
+
+
+
+
+i∈S 1 
+
+Q 1,ss 
+i 
+
+2 
+
++ 
+
+
+i∈S 2 
+
+Q 1,ss 
+i 2 
+
+</table></figure>
+
+			<note place="foot" n="3"> The case of SO(2) is special in the sense that it is possible to represent group elements as complex-valued numbers, rendering G a complex-valued Hermitian PSD matrix of size n × n (instead of a 2n × 2n real-valued PSD matrix).</note>
+
+			<note place="foot" n="4"> For simplicity we consider the case where w ij = 1 for (i, j) ∈ E. In general, one may consider the minimization of (i,j)∈E w ij R −1 i R j − R ij .</note>
+
+			<note place="foot" n="5"> The measurements in (4.1) satisfy R ij = R ji , R ii = I d .</note>
+
+			<note place="foot" n="6"> The method of decomposing the perturbation was used in [20,45] for analyzing the performance of a convex relaxation method for robust principal component analysis.</note>
+
+			<note place="foot" n="7"> Available from The Stanford three-dimensional Scanning Repository at http://www-graphics.stanford.edu/data/3Dscanrep/. Last accessed August 5, 2013.</note>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Acknowledgements</head><p>The authors thank Zaiwen Wen for many useful discussions regarding the ADM. They also thank Szy-mon Rusinkiewicz and Tzvetelina Tzeneva for invaluable information and assistance with the Lucy dataset.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Funding</head><p>This work was supported by the National Science Foundation (DMS-0914892); the Air Force Office of Scientific Research (FA9550-12-1-0317); the National Institute of General Medical Sciences (R01GM090200); the Simons Foundation (LTR DTD 06-05-2012); and the Alfred P. Sloan Foundation.</p></div>
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendix D. Proof of strong stability of LUD (Theorem 5.2)</head><p>To prove the strong stability of LUD, we need a tighter lower bound for f 2 . First, we define the loss from the diagonal entries f d 2 and that from the off-diagonal entries f off 2 as follows:</p><p>Then we have</p><p>If Tr(T) = O(n 2 ), then, using Lemma 5.2, we can show that Q 2 = O(n 2 2 ). And using (5.7) we are done. Thus, we will continue with the case when Tr(T) n 2 , where the term 2pn 2 2 in (D.1) is negligible. Now let us consider f off 2 . We further decompose f off 2 to two parts as follows:</p><p>where</p><p>Applying the same analysis as that in Section 4.2.4 to</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">On the concentration of eigenvalues of random symmetric matrices</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">N</forename><surname>Alon</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Krivelevich</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">V</forename><forename type="middle">H</forename><surname>Vu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Israel J. Math</title>
+		<imprint>
+			<biblScope unit="volume">131</biblScope>
+			<biblScope unit="page" from="259" to="267" />
+			<date type="published" when="2002" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<monogr>
+				<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">E</forename><surname>Anderson</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Z</forename><surname>Bai</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">C</forename><surname>Bischof</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Blackford</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Demmel</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Dongarra</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Du Croz</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Greenbaum</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Hammarling</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Mckenney</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Sorensen</surname></persName>
+		</author>
+		<title level="m">LAPACK Users&apos; Guide</title>
+		<meeting><address><addrLine>Philadelphia, PA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Society for Industrial and Applied Mathematics</publisher>
+			<date type="published" when="1999" />
+		</imprint>
+	</monogr>
+	<note>3rd edn</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Global motion estimation from point matches</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Arie-Nachimson</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Basri</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">I</forename><surname>Kemelmacher</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Kovalsky</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Second International Conference on three-dimensional Imaging, Modeling, Processing, Visualization and Transmission (3DIMPVT)</title>
+		<meeting><address><addrLine>Washington, DC</addrLine></address></meeting>
+		<imprint>
+			<publisher>IEEE Computer Society</publisher>
+			<date type="published" when="2012" />
+			<biblScope unit="page" from="81" to="88" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<monogr>
+		<title level="m" type="main">A Cheeger inequality for the graph connection Laplacian</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><forename type="middle">S</forename><surname>Bandeira</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><forename type="middle">A</forename><surname>Spielman</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1204.3873.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2012-08-05" />
+		</imprint>
+	</monogr>
+	<note>Submitted</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Cramér-Rao bounds for synchronization of rotations</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">N</forename><surname>Boumal</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">P.-A</forename><surname>Absil</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">V</forename><forename type="middle">D</forename><surname>Blondel</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1211.1621.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2012-08-05" />
+		</imprint>
+	</monogr>
+	<note>Submitted. Also available at</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Lie Groups</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Bump</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Graduate Texts in Mathematics</title>
+		<meeting><address><addrLine>Berlin</addrLine></address></meeting>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2004" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">A nonlinear programming algorithm for solving semidefinite programs via low-rank factorization</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Burer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><forename type="middle">D C</forename><surname>Monteiro</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Math. Program</title>
+		<imprint>
+			<biblScope unit="volume">95</biblScope>
+			<date type="published" when="2001" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Wide-sense estimation on the special orthogonal group</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Chiuso</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Picci</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Soatto</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Commun. Inf. Syst</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page" from="185" to="200" />
+			<date type="published" when="2008" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Sensor network localization by eigenvector synchronization over the Euclidean group</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Cucuringu</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Lipman</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ACM Trans. Sensor Netw</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="page">42</biblScope>
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Eigenvector synchronization, graph rigidity and the molecule problem</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Cucuringu</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Cowburn</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Inf. Inference: J. IMA</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="21" to="67" />
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<monogr>
+		<title level="m" type="main">Convex recovery from interferometric measurements</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">L</forename><surname>Demanet</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">V</forename><surname>Jugnon</surname></persName>
+		</author>
+		<ptr target="http://math.mit.edu/icg/papers/convex-interferometric.pdf.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2013-08-05" />
+		</imprint>
+	</monogr>
+<note type="report_type">Preprint. Available at</note>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Application of the method of moments in probability and statistics</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">P</forename><surname>Diaconis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of Symposia in Applied Mathematics</title>
+		<meeting>Symposia in Applied Mathematics<address><addrLine>San Antonio, TX; Providence, RI</addrLine></address></meeting>
+		<imprint>
+			<publisher>American Mathematical Society</publisher>
+			<date type="published" when="1987" />
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="page" from="125" to="142" />
+		</imprint>
+	</monogr>
+	<note>Moments in Mathematics</note>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<monogr>
+		<title level="m" type="main">On the trace of random orthogonal matrices. Unpublished manuscript</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">P</forename><surname>Diaconips</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">C</forename><forename type="middle">L</forename><surname>Mallowcs</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1986" />
+		</imprint>
+	</monogr>
+	<note>Results summarized in Diaconis</note>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<monogr>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Lanhui Wang And Amit</forename><surname>Singer</surname></persName>
+		</author>
+		<imprint/>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">A matrix equation for resolvents of random matrices with independent blocks</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">V</forename><surname>Girko</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Theory Probab. Appl</title>
+		<imprint>
+			<biblScope unit="volume">40</biblScope>
+			<biblScope unit="page" from="635" to="644" />
+			<date type="published" when="1995" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Improved approximation algorithms for maximum cut and satisfiability problems using semidefinite programming</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">X</forename><surname>Goemans</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><forename type="middle">P</forename><surname>Williamson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. ACM</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="page" from="1115" to="1145" />
+			<date type="published" when="1995" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">L1 rotation averaging using the Weiszfeld algorithm</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Hartley</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">K</forename><surname>Aftab</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Trumpf</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</title>
+		<meeting><address><addrLine>Washington, DC</addrLine></address></meeting>
+		<imprint>
+			<publisher>IEEE Computer Society</publisher>
+			<date type="published" when="2011-06" />
+			<biblScope unit="page" from="3041" to="3048" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">On the O(1/n) convergence rate of the Douglas-Rachford alternating direction method</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">B</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">X</forename><surname>Yuan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Numer. Anal</title>
+		<imprint>
+			<biblScope unit="volume">50</biblScope>
+			<biblScope unit="page" from="700" to="709" />
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Computing the polar decomposition with applications</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">N</forename><forename type="middle">J</forename><surname>Higham</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Sci. Stat. Comput</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="1160" to="1174" />
+			<date type="published" when="1986" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<monogr>
+		<title level="m" type="main">Estimation and registration on graphs</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><forename type="middle">D</forename><surname>Howard</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Cochran</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">W</forename><surname>Moran</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">F</forename><forename type="middle">R</forename><surname>Cohen</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1010.2983.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2010-08-05" />
+		</imprint>
+	</monogr>
+	<note>Arxiv preprint. Available at</note>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">Robust computation of linear models</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Lerman</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Mccoy</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><forename type="middle">A</forename><surname>Tropp</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><surname>Zhang</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1202.4044.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2012-08-05" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Semidefinite relaxation of quadratic optimization problems</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Z</forename><surname>Luo</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">W</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>So</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Mag</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="page" from="20" to="34" />
+			<date type="published" when="2010" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Robust rotation and translation estimation in multiview reconstruction</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Martinec</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><surname>Padjla</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</title>
+		<meeting><address><addrLine>Washington, DC</addrLine></address></meeting>
+		<imprint>
+			<publisher>IEEE Computer Society</publisher>
+			<date type="published" when="2007-06" />
+			<biblScope unit="page" from="1" to="8" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">How to generate random matrices from the classical compact groups</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">F</forename><surname>Mezzadri</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Notices Amer. Math. Soc</title>
+		<imprint>
+			<biblScope unit="volume">54</biblScope>
+			<biblScope unit="page" from="592" to="604" />
+			<date type="published" when="2007" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Means and averaging in the group of rotations</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Moakher</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Matrix Anal. Appl</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="page" from="1" to="16" />
+			<date type="published" when="2003" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<monogr>
+		<title level="m" type="main">Efficient rounding for the noncommutative Grothendieck inequality</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Naor</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">O</forename><surname>Regev</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><surname>Vidick</surname></persName>
+		</author>
+		<idno>abs/1210.7656</idno>
+		<imprint>
+			<date type="published" when="2012" />
+			<publisher>CoRR</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Sums of random symmetric matrices and quadratic optimization under orthogonality constraints</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Nemirovski</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Math. Program</title>
+		<imprint>
+			<biblScope unit="volume">109</biblScope>
+			<biblScope unit="page" from="283" to="317" />
+			<date type="published" when="2007" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Least orthogonal absolute deviations</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Nyquist</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Comput. Statist. Data Anal</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page" from="361" to="367" />
+			<date type="published" when="1988" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Efficient variants of the ICP algorithm</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><surname>Rusinkiewicz</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Levoy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on three-dimensional Digital Imaging and Modeling</title>
+		<meeting><address><addrLine>Washington, DC</addrLine></address></meeting>
+		<imprint>
+			<publisher>IEEE Computer Society</publisher>
+			<date type="published" when="2001" />
+			<biblScope unit="page" from="145" to="154" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Consensus optimization on manifolds</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Sarlette</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Sepulchre</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Control Optim</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="page" from="56" to="76" />
+			<date type="published" when="2009" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Viewing direction estimation in cryo-EM using synchronization</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Shkolnisky</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Imaging Sci</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="page" from="1088" to="1110" />
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Angular synchronization by eigenvectors and semidefinite programming</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Appl. Comput. Harmon. Anal</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="page" from="20" to="36" />
+			<date type="published" when="2011" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Three-dimensional structure determination from common lines in cryoEM by eigenvectors and semidefinite programming</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Shkolnisky</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Imaging Sci</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page" from="543" to="572" />
+			<date type="published" when="2011" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Vector diffusion maps and the connection Laplacian</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H.-T</forename><surname>Wu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Comm. Pure Appl. Math</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<biblScope unit="page" from="1067" to="1144" />
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Viewing angle classification of cryo-electron microscopy images using eigenvectors</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Z</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Shkolnisky</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Hadani</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Imaging Sci</title>
+		<imprint>
+			<biblScope unit="volume">4</biblScope>
+			<biblScope unit="page" from="723" to="759" />
+			<date type="published" when="2011" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Moment inequalities for sums of random matrices and their applications in optimization</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>So</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Math. Program</title>
+		<imprint>
+			<biblScope unit="volume">130</biblScope>
+			<biblScope unit="page" from="125" to="151" />
+			<date type="published" when="2011" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">On approximating complex quadratic optimization problems via semidefinite programming relaxations</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><surname>So</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Y</forename><surname>Ye</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Math. Program</title>
+		<imprint>
+			<biblScope unit="volume">110</biblScope>
+			<biblScope unit="page" from="93" to="110" />
+			<date type="published" when="2007" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">On orthogonal linear approximation</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Späth</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><forename type="middle">A</forename><surname>Watson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Numer. Math</title>
+		<imprint>
+			<biblScope unit="volume">51</biblScope>
+			<biblScope unit="page" from="531" to="543" />
+			<date type="published" when="1987" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Orthogonal procrustes rotation for two or more matrices</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">J</forename><surname>Ten Berge</surname></persName>
+		</author>
+		<idno type="doi">10.1007/BF02294053</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Psychometrika</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="page" from="267" to="276" />
+			<date type="published" when="1977" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Max-Cut and the smallest eigenvalue</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">L</forename><surname>Trevisan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 41st Annual ACM Symposium on Theory of Computing, STOC 09</title>
+		<meeting>the 41st Annual ACM Symposium on Theory of Computing, STOC 09<address><addrLine>New York, NY, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>ACM</publisher>
+			<date type="published" when="2009" />
+			<biblScope unit="page" from="263" to="272" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Distributed image-based 3-D localization of camera sensor networks</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Tron</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">R</forename><surname>Vidal</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Joint 48th IEEE Conference on Decision and Control and 28th Chinese Control Conference</title>
+		<meeting><address><addrLine>Shanghai, China</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2009" />
+			<biblScope unit="page" from="16" to="18" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<monogr>
+		<title level="m" type="main">Global alignment of multiple 3-d scans using eigenvector synchronization</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><surname>Tzeneva</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2011" />
+		</imprint>
+		<respStmt>
+			<orgName>Princeton University</orgName>
+		</respStmt>
+	</monogr>
+<note type="report_type">Senior Thesis</note>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Alternating direction augmented Lagrangian methods for semidefinite programming</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">Z</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Goldfarb</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">W</forename><surname>Yin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Math. Program. Comput</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="page" from="203" to="230" />
+			<date type="published" when="2010" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Angular embedding: from jarring intensity differences to perceived luminance</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><forename type="middle">X</forename><surname>Yu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</title>
+		<meeting><address><addrLine>Washington, DC</addrLine></address></meeting>
+		<imprint>
+			<publisher>IEEE Computer Society</publisher>
+			<date type="published" when="2009-06-20" />
+			<biblScope unit="page" from="2302" to="2309" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Angular embedding: a robust quadratic criterion</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">S</forename><forename type="middle">X</forename><surname>Yu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Pattern Anal. Mach. Intell</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="page" from="158" to="173" />
+			<date type="published" when="2012" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<monogr>
+		<title level="m" type="main">A novel M-estimator for robust PCA. Arxiv preprint</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Lerman</surname></persName>
+		</author>
+		<ptr target="http://arxiv.org/abs/1112.4863v2.Lastaccessed" />
+		<imprint>
+			<date type="published" when="2012-08-05" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>
