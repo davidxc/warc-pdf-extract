@@ -5,6 +5,8 @@ databases of bibliographic identifiers.
 
 See `./notes/comparison_summary.md` for summary and conclusions.
 
+See `./luigi_scripts/README.md` for summary and conclusions.
+
 ### Big Picture
 
 Want to identify our tens of millions of crawled papers to identifiers

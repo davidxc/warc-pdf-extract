@@ -1,5 +1,7 @@
 work
 test-data
+grobid-grobid-*/
+grobid-*.zip
 
 *.o
 *.a

@@ -17,8 +17,14 @@ Requires:
 - `luigi`
 - `gluish` (extensions to luigi)
 - `GROBID`
+- `time` (GNU program, not the bash builtin)
 - `ia-mine` tooL
 - `ia` python library (and appropriate upload credentials)
+
+Run:
+
+    sudo apt install time maven unzip
+    sudo pip3 install gluish iamine
 
 Configure TMPDIR and restart user session.
 
@@ -28,9 +34,9 @@ You need an IA item manifest for the crawl or the jobs will refuse to run. Use
 metamgr to export item lists (one item identifier per line) of all items in the
 crawl. Put this file at `download/items_{crawl}.tsv`.
 
-Then, run Luigi from this directory, single worker, local scheduling:
+Then, run Luigi from this directory, three workers, local scheduling:
 
-    PYTHONPATH='luigi_scripts' luigi --module warc_extract ExtractCrawl --crawl CITESEERX-CRAWL-2017 --local-scheduler --workers 3
+    PYTHONPATH='luigi_scripts' luigi --module warc_extract ExtractCrawl --crawl citeseerx_crawl_2017 --local-scheduler --workers 3
 
 In actual use you'll probably want more workers, and maybe even distributed
 scheduling (multiple machines).

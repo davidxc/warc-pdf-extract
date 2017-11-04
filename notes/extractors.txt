@@ -9,6 +9,7 @@ Download:
     cd grobid-grobid-parent-0.4.4
     mvn clean install
     # need to run at least once locally to create config files?
+    java -jar grobid-core/target/grobid-core-0.4.4-SNAPSHOT.one-jar.jar -gH grobid-home -s "asdf" -exe processRawReference
 
 Docker way:
 
