@@ -2,6 +2,9 @@
 from nose.tools import assert_equals
 from bin.grobid2json import *
 
+def test_more_files():
+    do_tei("test/files/fe06ea1b36983c43ee988ec55b22b208118cccb7.tei.xml")
+    do_tei("test/files/ffe4a63dd139647318b55806003b99c7ddd853f2.tei.xml")
 
 class TestConvert:
 

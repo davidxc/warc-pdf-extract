@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 /fast/pdf-extract/grobid-grobid-parent-0.4.4/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<encodingDesc>
+			<appInfo>
+				<application version="0.4.5-dummy" ident="GROBID" when="2017-11-04T03:11+0000">
+					<ref target="https://github.com/kermitt2/grobid">GROBID - A machine learning software for extracting information from scholarly documents</ref>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Determining the reality of X-ray filaments</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability status="unknown"><licence/></availability>
+				<date type="published" when="2000">2000</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author role="corresp">
+							<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">J</forename><surname>Hardcastle</surname></persName>
+							<email>(m.hardcastle@bristol.ac.uk)</email>
+							<affiliation key="aff0">
+								<orgName type="department">Department of Physics</orgName>
+								<orgName type="institution">University of Bristol</orgName>
+								<address>
+									<addrLine>Tyndall Avenue</addrLine>
+									<postCode>BS8 1TL</postCode>
+									<settlement>Bristol</settlement>
+									<country key="GB">UK</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Determining the reality of X-ray filaments</title>
+					</analytic>
+					<monogr>
+						<title level="j" type="main">Astron. Astrophys</title>
+						<imprint>
+							<biblScope unit="volume">357</biblScope>
+							<biblScope unit="page" from="884" to="890"/>
+							<date type="published" when="2000">2000</date>
+						</imprint>
+					</monogr>
+					<note type="submission">Received 29 December 1999 / Accepted 11 April 2000</note>
+					<note>ASTRONOMY AND ASTROPHYSICS</note>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>methods: statistical-X-rays: galaxies-galaxies: Seyfert-galaxies: quasars: general-galaxies: starburst</keywords>
+			</textClass>
+			<abstract>
+				<p>A number of authors have reported filaments connecting bright structures in high-resolution X-ray images, and in some cases these have been taken as evidence for a physical connection between the structures, which might be thought to provide support for a model with non-cosmological redshifts. In this paper I point out two problems which are inherent in the interpretation of smoothed photon-limited data of this kind, and develop some simple techniques for the assessment of the reality of X-ray filaments, which can be applied to either simply smoothed or adaptively smoothed data. To illustrate the usefulness of these techniques, I apply them to archival ROSAT observations of galaxies and quasars previously analysed by others. I show that several reported filamentary structures connecting X-ray sources are not in fact significantly detected.</p>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1.">Introduction</head><p>With the advent of high-resolution X-ray telescopes it is now routine to see structure in X-ray images. Assessing the level at which one should believe this structure presents more of a challenge in X-ray observations than in optical or radio images of comparable resolution, because X-ray data are very often photon-noise limited. The problem is made worse by the com- mon (and necessary) practice of smoothing the data with a Gaus- sian. This is carried out in order to make the images conform to our expectations of what the 'true' sky image with infinite exposure time would look like; but it is important to remember that in general it does not in fact take away the photon-limited nature of the underlying data.</p><p>A number of smoothed X-ray images of extragalactic objects appear, on published contour maps, to show quite clear 'filamen- tary' connections between X-ray sources in the field. (The term 'filament' does not have a single definition in the literature; I shall use it to mean any extended, apparently linear connection between two sources.) In this paper I discuss the techniques nec- essary to determine whether such filamentary connections are real, and apply them to some sample observations of galaxies and quasars, previously analysed by other authors <ref type="bibr" target="#b0">(Arp 1996;</ref><ref type="bibr" target="#b4">Dahlem et al. 1996;</ref><ref type="bibr" target="#b1">Arp 1997)</ref>, which I have taken from the ROSAT archives.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2.">Significance and contouring</head><p>The first problem in assessing the reality of features in smoothed X-ray maps is that of the significance levels to be chosen when contouring. If the mean background count density is µ counts per unit area and the convolving Gaussian has the form 1 f (r) ∝ exp(−r 2 /2Σ 2 ), then, as pointed out in Appendix A of <ref type="bibr" target="#b8">Hardcastle et al. (1998)</ref>, the background noise is not nor- mally distributed unless µΣ 2 1, a condition which does not typically apply in the sort of datasets being considered here. It is therefore incorrect, for example, to take the r.m.s. dis- persion of the background noise after smoothing, multiply by three, add the mean and call the resulting contour level '3σ' as though it were the corresponding confidence level for normally- distributed noise. In general it is not. Contours for noise which is not normally distributed should ideally have the same proper- ties as those for normally distributed noise, so that the contour referred to as the '3σ' contour, for example, should exclude all but 0.135% of the background. But in the case where µΣ 2 &lt; ∼ 1, there is no analytic solution to the question 'what is the contour level corresponding to the nσ level for normally distributed noise, for some n?'. Instead, <ref type="bibr" target="#b8">Hardcastle et al. (1998)</ref> outline a Monte Carlo procedure for determining the correct significance level. In this procedure, fields of simulated Poisson noise are convolved with a Gaussian and the 'nσ' level is derived di- rectly from the distribution of the resulting noise. (Results of this process for some sample values of µ and Σ are plotted in <ref type="figure">Fig. 1</ref>.) If, on the other hand, µΣ 2 1, then the noise will be approximately normally distributed and a simple analysis, de- scribed in <ref type="bibr" target="#b8">Hardcastle et al. (1998)</ref>, shows that the 3σ contour should be at µ + 3 µ/4πΣ 2 counts per unit area.</p><p>It is common for authors not to state the method by which the '3σ' (or other) levels in published contour plots of smoothed X-ray images were derived; in some cases, even the size of the convolving Gaussian and/or the binning scheme is not given. This practice makes it very difficult to assess the reality of fea- <ref type="figure">Fig. 1</ref>. The true 3σ level derived from sim- ulation as a function of the mean number of counts per pixel in the background (µ) and the width Σ of the convolving Gaussian (de- fined in the text; FWHM = 2.345Σ). The solid lines are cubic splines fit through the data points derived from simulation. Devia- tions from a smooth curve seen for low µ and Σ are a result of the Poisson-limited nature of the data. At high µ, it will be seen that the 3σ level converges on a value close to µ, as expected. At low µ and Σ, the difference between the 3σ level and µ is highly sig- nificant. The dashed lines below each solid line show the 'mean plus three times r.m.s.' contour levels derived from the same sim- ulations. While they join the true 3σ lines at high µ and Σ, this quantity is clearly a very poor, systematically low estimator of the true 3σ value at low µ and Σ.</p><p>tures in such plots, and it is recommended that in all cases where the noise is not, or might not be, normally distributed authors should explain what they mean by '3σ'. In what follows, wher- ever I refer to a 2σ or 3σ level calculated by me, it will imply that I have derived it from simulated Poisson noise as described above.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.">The effect of the PSF</head><p>However, even when the 3σ level is correctly defined, such that a contour at this level would exclude all but 0.135% of the Gaussian-smoothed background noise, it is unfortunately not necessarily the case that we can say that all 'structure' around a bright source enclosed by such a contour is detected at a corre- sponding significance level. The radially averaged point-spread function (PSF) of X-ray instruments often has a very broad tail, so that there are expected to be significant count densities at large distances from the centroid; the shape of the PSF can be energy-dependent, so that these off-centre counts are likely to have a peculiar spectrum compared to either the point source itself or the background. When two point sources are placed close to each other, the natural consequence of this feature of the PSF is that we get an enhancement of the count rate which is at its greatest directly between them. Smoothing the data with a Gaussian may well bring this feature up above the noise, giving the appearance of a filament connecting the sources. various kinds of elongation, but since it is very hard to determine the extent to which this affects a given observation, I have not included it in the simulations.</p><p>The ROSAT HRI PRF is more strongly affected by the as- pect reconstruction problems, but, for simplicity, in the two cases where it is used in this paper I have just used the stan- dard parametrization of <ref type="bibr" target="#b5">David et al. (1997)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1.">Mrk 474</head><p>Mrk 474 is a z = 0.041 Seyfert galaxy adjacent to a z = 1.94 quasar (Arp 1996). The Seyfert is a very strong X-ray source, while the point X-ray source identified by Arp with the quasar, located 170 arcsec to the NW, is only weakly detected in the PSPC observations. Arp (1996) analysed the 0.5-2.0 keV PSPC data, and saw a filament connecting the Seyfert and quasar. It is not clear what binning scheme and smoothing Gaussian was used to produce his Figs. 1 and 2, but I obtain very similar results by binning by a factor 7 (so that each pixel is 3.5 arcsec) and smoothing with a Gaussian of Σ = 4 pixels (14 arcsec). The results are insensitive to the exact values of binning and smoothing used. The mean number of background counts in the image per 3.5- arcsec pixel, close to the central source and after excluding all visible background sources is 0.0135, which, using the tech- niques described in Sect. 2, corresponds to 2-and 3σ levels in the smoothed dataset of 0.032 and 0.044 counts pixel −1 re- spectively. The image is contoured with these levels in <ref type="figure" target="#fig_0">Fig. 3</ref>. Comparing this figure with Arp's <ref type="figure">Figs. 1 and 2</ref>, it can be seen that my 2σ level is more or less equivalent to his 4σ level, while my 3σ level is close to his 5σ level. As shown in <ref type="figure" target="#fig_0">Fig. 3</ref>, the con-  necting 'filament' is not represented except at the 2σ level when the confidence limits are calculated correctly. Moreover, when I simulated this situation (using 30 net counts for the quasar, as measured by <ref type="bibr" target="#b0">Arp (1996)</ref>, and 6700 net counts for the Seyfert galaxy), I found that we expect to see a connection between the two sources at the 2σ level 65% of the time, and even at the 3σ level 30% of the time, if the two sources are in fact just adjacent point sources, because of the increased count density close to Mrk 474. The detection of the filament in this source is thus certainly not statistically significant.</p><note type="other">. ROSAT observations obtained from the public archive. The ROR number is the ROSAT Observation Request; an 'h' as the second letter</note></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2.">NGC 4651/3C 275.1</head><p>The nearby (Virgo cluster) galaxy NGC 4651 is adjacent to the radio-loud quasar 3C 275.1 (z = 0.557). In this case the quasar is a reasonably strong X-ray source, while the galaxy shows some weaker extended emission. <ref type="bibr" target="#b9">Hardcastle &amp; Worrall (1999)</ref> found the PSPC emission from the quasar to be consistent with that of a point source, although the HRI observations of the source suggest some extension on small scales, consistent with emission from a cluster <ref type="bibr" target="#b9">(Hardcastle &amp; Worrall 1999;</ref><ref type="bibr" target="#b3">Crawford et al. 1999</ref>). NGC 4651 has an optical jet or tail; <ref type="bibr" target="#b0">Arp (1996)</ref> views this as evidence for ejection, while <ref type="bibr" target="#b10">Wehrle et al. (1997)</ref> suggest that the optical colours are evidence for a tidal origin. Binning and smoothing the 0.1-2.0 keV energy band with the same parameters as I used for Mrk 474, and with a mea- sured mean background count level of 0.0534 counts pixel −1 , the elongation of NGC 4651 in the direction of 3C 275.1 is clearly visible. The 3σ contour after smoothing is at about 0.110 counts pixel −1 , and the elongation is seen at this level [corre- sponding to a level somewhere between the 4 and 8σ contours in <ref type="figure">Fig. 7</ref> of <ref type="bibr" target="#b0">Arp (1996)</ref>]. Taking the quasar as containing aboutis likely to be real. However, there is no evidence for a compact jet-like structure in NGC 4651 in the HRI image.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3.">NGC 3067/3C 232</head><p>The radio-loud quasar 3C 232 (z = 0.534) is adjacent to the starburst galaxy NGC 3067. In this case, too, the effect of con- tamination by the quasar's PSF is small and the elongation seen by <ref type="bibr" target="#b0">Arp (1996)</ref> in the 0.7-2.0 keV X-ray emission of NGC 3067 appears real; simulation shows that this degree of extension in the smoothed image is too great to be produced by chance, par- ticularly as it is not directed towards the quasar (which is what we would expect for an artefact of the sort discussed in Sect. 3).</p><p>Arp (1996) also reports filaments in smoothed 0.1-2.0 keV images connecting 3C 232 to stellar objects to the north and northeast. Arp binned the data here in 5-arcsec pixels and smoothed with a small Gaussian of Σ = 3 pixels. The back- ground noise level per 5-arcsec pixel in this energy band is 0.068 counts; the corresponding 3σ level is 0.15 counts pixel −1 , whereas Arp's lowest contour appears to have been at 0.11 counts pixel −1 , somewhat below the 2σ level. Simulation shows that we would not expect a filament even at this level connect- ing 3C 232 with the northern stellar object by chance under the null hypothesis, which suggests that there is some real emission in between 3C 232 and the northern stellar object, but the data provide no significant evidence for such a filament rather than, for example, an intervening point source.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.4.">NGC 4319/Mrk 205</head></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Fig. 3 .</head><label>3</label><figDesc>Fig. 3. The ROSAT PSPC image of Markarian 474 smoothed and binned as described in the text, with contours at 0.0319, 0.0435, 0.07, 0.09, 0.12. .. 0.30 counts pixel −1. The lowest contours correspond to the 2 and 3σ levels derived from simulation.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0" validated="false"><head>Table 1</head><label>1</label><figDesc></figDesc><table></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1" validated="false"><head>denotes HRI data, a 'p' indicates PSPC.</head><label></label><figDesc></figDesc><table>Object 
+ROR number Livetime (s) 
+
+Mrk 474 
+rp600448 
+12381 
+NGC 4651/3C 275.1 rp600450 
+10147 
+rh800719 
+25157 
+NGC 3067/3C 232 
+rp700468 
+5376 
+NGC 4319/Mrk 205 rh600441 
+12272 
+rh600834 
+34991 
+NGC 3628 
+rp700010 
+13387  *  
+rh700009 
+13484 
+NGC 4151 
+rh700023 
+9162 
+
+ *  After master veto rate filtering; see the text. 
+
+</table></figure>
+
+			<note place="foot" n="1"> To avoid confusion, I use Σ throughout the paper to denote the width of a convolving Gaussian, and σ to refer to the conventional significance levels.</note>
+
+			<note place="foot">So to assess the reality of filaments observed at a given contour level in smoothed images we must ask what is the probability of seeing such filaments under the null hypothesis, which is that the two sources are in fact not connected by any real feature on the X-ray sky. In general this too must be done by Monte Carlo simulation. I have written code which generates a Poisson-distributed noise background and two or more simulated sources, convolved with a suitable PSF, which match those seen on the sky. The simulated data are then smoothed with a Gaussian, and then either automatically or by eye it is possible to see whether a &apos;filament&apos; at a given contour level joins them (in practice, the code does this using a simple recursive flood-fill algorithm). By repeating this procedure many times, we can directly estimate the probability that an observed filament would be seen under the null hypothesis, and so characterise its statistical significance. Only connections which have a very small chance of being seen under the null hypothesis can be described as statistically significant. An example of the kinds of apparent filaments that can result from low choices of contour levels even under the null hypothesis is given in Fig. 2. 4. Data and simulations Using the techniques discussed above, it is possible to reexamine objects discussed in the literature. The ROSAT data listed in Table 1 were obtained from the public archive. Data 886 M.J. Hardcastle: Determining the reality of X-ray filaments Fig. 2. Simulated ROSAT HRI observations of the Seyfert NGC 4151 and a neighbouring BL Lac object, binned in 10-arcsec pixels and smoothed with a Σ = 3 pixel Gaussian. At low contour levels, a variety of apparent filamentary structures of the type shown can be seen connecting the sources in about one in five simulated observations. The actual observations of this object are discussed in Sect. 4.6. were analysed using the IRAF Post-Reduction Offline Software (PROS). The radially averaged ROSAT PSPC PSF is well known (e.g. Hasinger et al. 1995) and so, using a suitably integrated version of an analytical approximation to the PSF, it is simple to simulate PSPC observations. One complication is that the PSF is both energy-dependent and dependent on the off-axis angle of the source. Dealing with the energy dependence of the PSF is not hard, but would involve generating an energy-weighted PSF for each source. For simplicity, I choose to use the PSF at a single energy, in most cases 1 keV (the energy at which ROSAT is most sensitive); this is a conservative choice, in the sense that the PSF is narrowest at approximately this energy. The offaxis angle dependence of the width of the PSF is incorporated, though not the distortions which appear at far-off-axis angles; no source considered here is significantly affected by them. The actual PSF observed in a given observation is also affected by the ROSAT aspect reconstruction problems, which can introduce</note>
+
+			<note place="foot" n="200"> counts in the 0.1-2.0 keV energy band, and the galaxy as containing 120, I used simulations to determine whether, if the galaxy were really a point source, the effect of the quasar&apos;s proximity could cause the observed extension; as expected from the images and from the comparative weakness of the quasar, the probability of obtaining such a strong result by chance is negligible. We can safely conclude that the extension of NGC 4651</note>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+			</div>
+
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.5.">NGC 3628</head><p>The starburst galaxy NGC 3628 was observed by <ref type="bibr" target="#b4">Dahlem et al. (1996)</ref> and shows a striking filamentary structure, extending south from the galactic nucleus to a point source 2.7 arcmin away, in images in the 0.75 keV band (0.44-1.21 keV) and 1.5 keV band (0.73-2.04 keV); this point source itself appears connected to another point source a short distance to the SE, which Flesch &amp; Arp (1999) identify with a z = 2.15 quasar.</p><p>The contour levels selected by Dahlem et al. correspond quite well to the 3σ levels derived from simulation; after master veto rate filtering to match theirs and binning in 15-arcsec pixels I find a background count rate away from NGC 3628 in the 0.75- keV band of 0.23 counts pixel −1 , corresponding to a 3σ level of 0.73 counts pixel −1 , which is actually below their adopted 2.5σ level. The filament is thus apparent in contours at better than the 3σ level. Simulation (using a PSF appropriate for an energy of 0.75 keV) shows that the connection between the two adjacent point sources is not significant, but that a connection at the observed level between NGC 3628 and the source to the S is not expected to occur by chance. However, this does not take account of the extended X-ray halo found by <ref type="bibr" target="#b4">Dahlem et al. (1996)</ref> around NGC 3628 (and clearly visible as excess emission in their <ref type="figure">Fig. 2</ref>). If we model this crudely as an extra uniform contribution to the background -taking the average in a region between NGC 3628 and the southern source, the background is pushed up to 0.59 ± 0.04 counts pixel −1 -then the connection between NGC 3628 and the point source can occur by chance in a few per cent of cases, so the feature is only marginally significant. Again, the filamentary emission is not seen in the HRI image, which supports the notion that we are seeing a region of extended emission rather than a true X-ray jet; but it will clearly be of great interest to obtain more sensitive images of this field. At the time of writing, a scheduled short Chandra observation has not yet been processed.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.6.">NGC 4151</head><p>Arp (1997) suggests that a filament connects this well-studied Seyfert galaxy to a z = 0.615 BL Lac object 5 arcmin to the N in a ROSAT HRI image. Arp binned the HRI data into 10-arcsec (20-pixel) square bins; the off-source background is then 1.21 counts pixel −1 . It is not clear what Arp means when he says that he smoothed the data with a '5σ Gaussian'; a Σ = 5 arcsec Gaussian is very small given this binning scheme while a Σ = 5 pixel Gaussian is very large, causing the two sources to overlap. I obtain images quite similar to those of Arp (1997) if I smooth with a Σ = 3 pixel Gaussian <ref type="figure">(Fig. 5)</ref>. The 3σ level derived from simulation is then 1.53 counts pixel −1 (since µΣ 2 ≈ 10, the analytic approximation of Sect. 2 gives a very similar an- swer). As <ref type="figure">Fig. 5</ref> shows, the sources are not connected at the 3σ level with this choice of smoothing. A connection between the sources does appear at a much lower significance level, 1.35 counts pixel −1 , which is about 1.5σ. Simulation shows that a connection at this level can occur by chance 20% of the time under the null hypothesis (some examples of the connections seen in simulations are shown in <ref type="figure">Fig. 2</ref>, where the lowest con- tour is at 1.35 counts pixel −1 ). The connection seen in <ref type="figure">Fig. 5</ref> is therefore not significant.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.">Conclusions</head><p>Using Monte Carlo techniques to find the distribution of pixel values in smoothed noise fields and to assess the reality of con- nections between adjacent sources, I have found that the fil- 890 M.J. Hardcastle: Determining the reality of X-ray filaments amentary X-ray connections between low-and high-redshift Seyfert galaxies and quasars reported by <ref type="bibr" target="#b0">Arp (1996)</ref> are not sta- tistically significant. I have confirmed that the X-ray extension of two low-redshift galaxies located near high-redshift radio- loud quasars, reported in the same paper, is significant. The fil- ament extending south from NGC 3628, discussed by <ref type="bibr" target="#b4">Dahlem et al. (1996)</ref>, was shown to be marginally significant. The con- nection between NGC 4151 and a BL Lac object reported by Arp (1997) is also apparently not statistically significant.</p><p>These results suggest that it is necessary to be cautious in the interpretation of smoothed X-ray images, and I urge authors to apply the techniques I have described to any situation where the detection or non-detection of faint extended X-ray emission has important scientific implications.</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Arp</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">A&amp;A</title>
+		<imprint>
+			<biblScope unit="volume">316</biblScope>
+			<biblScope unit="page">57</biblScope>
+			<date type="published" when="1996" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Arp</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">A&amp;A</title>
+		<imprint>
+			<biblScope unit="volume">319</biblScope>
+			<biblScope unit="page">33</biblScope>
+			<date type="published" when="1997" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Seeing red: redshifts, cosmology and academic science</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Arp</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Apeiron</title>
+		<imprint>
+			<date type="published" when="1998" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">C</forename><forename type="middle">S</forename><surname>Crawford</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">I</forename><surname>Lehmann</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><forename type="middle">C</forename><surname>Fabian</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">N</forename><surname>Bremer</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Hasinger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">MNRAS</title>
+		<imprint>
+			<biblScope unit="volume">308</biblScope>
+			<biblScope unit="page">1159</biblScope>
+			<date type="published" when="1999" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Dahlem</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">T</forename><forename type="middle">M</forename><surname>Heckman</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Fabbiano</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">D</forename><surname>Lehnert</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><surname>Gilmore</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ApJ</title>
+		<imprint>
+			<biblScope unit="volume">461</biblScope>
+			<biblScope unit="page">724</biblScope>
+			<date type="published" when="1996" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">L</forename><forename type="middle">P</forename><surname>David</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">F</forename><forename type="middle">R</forename><surname>Harnden</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">K</forename><forename type="middle">E</forename><surname>Kearns</surname></persName>
+		</author>
+		<ptr target="&lt;http://hea-www.harvard.edu/rosat/rsdcwww/hricalrep.html&gt;" />
+	</analytic>
+	<monogr>
+		<title level="j">Science Data Center report</title>
+		<imprint>
+			<date type="published" when="1997" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<monogr>
+				<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">E</forename><surname>Flesch</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">H</forename><surname>Arp</surname></persName>
+		</author>
+		<idno>astro-ph/9907219</idno>
+		<title level="m">A&amp;A submitted</title>
+		<imprint>
+			<date type="published" when="1999" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">MPE/OGIP Calibration Memo CAL/ROS/93-015, version</title>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Hasinger</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">G</forename><surname>Boese</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">P</forename><surname>Predehl</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1995-05-08" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">J</forename><surname>Hardcastle</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><forename type="middle">M</forename><surname>Worrall</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><surname>Birkinshaw</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">MNRAS</title>
+		<imprint>
+			<biblScope unit="volume">296</biblScope>
+			<biblScope unit="page">1098</biblScope>
+			<date type="published" when="1998" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">M</forename><forename type="middle">J</forename><surname>Hardcastle</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><forename type="middle">M</forename><surname>Worrall</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">MNRAS</title>
+		<imprint>
+			<biblScope unit="volume">309</biblScope>
+			<biblScope unit="page">696</biblScope>
+			<date type="published" when="1999" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title/>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">A</forename><forename type="middle">E</forename><surname>Wehrle</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">W</forename><forename type="middle">C</forename><surname>Keel</surname></persName>
+		</author>
+		<author>
+			<persName xmlns="http://www.tei-c.org/ns/1.0"><forename type="first">D</forename><forename type="middle">L</forename><surname>Jones</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">AJ</title>
+		<imprint>
+			<biblScope unit="volume">114</biblScope>
+			<biblScope unit="page">115</biblScope>
+			<date type="published" when="1997" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>
