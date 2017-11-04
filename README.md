@@ -16,3 +16,6 @@ fulltext.
 Need to select the best tools for this task, and have an idea of the resource
 consumption (aka, throughput) and accuracy involved.
 
+### Run Tests
+
+    nosetests3

@@ -1,0 +1,18 @@
+- crawl-specific luigi process, based on warcsum
+    => download warcs
+    => extract PDFs to directory
+    => run grobid on directory
+    => zip up results and upload to petabox
+- seed-list-based luigi/hadoop process
+    => chunk seedlist into item-sized chunks, then task-sized chunks
+        => chunks of 100k PDFs per item (10GB uncompressed raw text)
+        => 50x tasks of 2000 PDFs (~10 minutes of work, if fast)
+        => 500 tasks per million URLs
+    => download files to directory; create manifest of missing and file output
+    => run grobid on directory (rest is same as above)
+
+While i'm at it, could...
+x metamgr-like pulling of item lists
+    => using ia-mine
+- update luigi install process to use gluish upstream
+- ia wrapper luigi tasks (eg, check if remote item/file exists)

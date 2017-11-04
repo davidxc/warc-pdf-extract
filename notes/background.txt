@@ -21,8 +21,12 @@ https://pdfs.semanticscholar.org/753d/9c1d2c1f7e4fb7e474236f9409d2e2590142.pdf
 - CERMINE
 x ParsCit
     => only works on text; has poor reputation
+    => http://aye.comp.nus.edu.sg/parsCit/
 x biblicit
     => based on ParsCit, explicitly recommends GROBID
+x pdf-extract
+    => from Crossref; unmaintained
+    => ruby
 
 ### Quick and Dirty Extractors
 
@@ -35,7 +39,7 @@ x pdfx
     => meh.
 x RefExtract
     => very reference-oriented
-- docear
+x docear
     uses font size to identify title
 
 ### Proprietary
