@@ -4,6 +4,7 @@ import tempfile
 import datetime
 import time
 import json
+import glob
 import os
 
 import luigi
@@ -12,9 +13,9 @@ from gluish.utils import shellout
 from gluish.format import TSV
 import requests
 
-# XXX: config values somewhere?
-GROBID_JAR="/home/bnewbold/src/grobid/grobid-grobid-parent-0.4.4/grobid-core/target/grobid-core-0.4.4-SNAPSHOT.one-jar.jar"
-GROBID_HOME="/home/bnewbold/src/grobid/grobid-grobid-parent-0.4.4/grobid-home/"
+# TODO: proper config values somewhere?
+GROBID_JAR="./grobid-grobid-parent-0.4.4/grobid-core/target/grobid-core-0.4.4-SNAPSHOT.one-jar.jar"
+GROBID_HOME="./grobid-grobid-parent-0.4.4/grobid-home/"
 
 
 class CrawlItemsList(luigi.Task):
@@ -85,7 +86,8 @@ class ItemWarcDownload(luigi.Task):
                 crawl=self.crawl,
                 item=self.item,
                 fname=fname)
-            shellout("mv {saved} new_path",
+            shellout("mv {saved} {new_path}",
+                saved=saved,
                 new_path=new_path)
 
         # write out TSV of WARC names (and hashes?)
@@ -114,27 +116,31 @@ class ItemPdfs(luigi.Task):
 
         (_, input_manifest) = self.input()
 
-        warc_list = [l.strip() for l in input_manifest.readlines()]
-        downloaded_warcs = ["work/{}/{}/{}".format(self.crawl, self.item, w) for w in warc_manifest]
+        with open(input_manifest.path, 'r') as mf:
+            warc_list = [l.strip() for l in mf.readlines()]
+        downloaded_warcs = ["work/{}/{}/{}".format(self.crawl, self.item, w) for w in warc_list]
 
-        pdfdir = "work/{}/{}/pdfs".format(self.crawl, self.item)
-        shellout("mkdir -p {pdfdir}", pdfdir)
+        pdf_dir = "work/{}/{}/pdfs".format(self.crawl, self.item)
+        shellout("mkdir -p {pdf_dir}", pdf_dir=pdf_dir)
 
         shellout("""
-            warc_extract_filter.py {pdfdir} {infiles}
+            bin/warc_extract_filter.py {pdf_dir} {infiles}
+                --ignore-invalid
                 --min-size 512
                 --max-size 268435456
                 --mimetype pdf
                 --out-suffix .pdf""",
-            outdir=outdir,
+            pdf_dir=pdf_dir,
             infiles=" ".join(downloaded_warcs))
 
-        output = shellout("echo 'done > {output}")
+        output = shellout("echo done > {output}")
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
         return luigi.LocalTarget('work/{}/{}/pdfs.STAMP'.format(self.crawl, self.item))
 
+def glob_count(g):
+    return len(glob.glob(g))
 
 class ItemGrobidExtract(luigi.Task):
 
@@ -153,9 +159,8 @@ class ItemGrobidExtract(luigi.Task):
 
         pdf_dir = "work/{}/{}/pdfs".format(self.crawl, self.item)
         grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
-        shellout("mkdir -p {grobid_dir}", grobid_dir)
+        shellout("mkdir -p {grobid_dir}", grobid_dir=grobid_dir)
 
-        # XXX: set GROBID path
         output = shellout("""
             /usr/bin/time -v -o {output}
             java
@@ -165,17 +170,20 @@ class ItemGrobidExtract(luigi.Task):
                 -dIn {pdf_dir}
                 -r
                 -dOut {grobid_dir}
-                -exe processFulltext""",
+                -exe processFullText""",
             pdf_dir=pdf_dir,
             grobid_dir=grobid_dir,
             GROBID_JAR=GROBID_JAR,
             GROBID_HOME=GROBID_HOME)
 
+        # java/GROBID doesn't error when it runs. One way to check that it ran
+        # is that there should be a TEI file for every file in PDF dir.
+        assert(glob_count(pdf_dir + "/*.pdf") == glob_count(grobid_dir + "/*.tei.xml"))
+
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
         return luigi.LocalTarget('work/{}/{}/grobid.timing'.format(self.crawl, self.item))
-
 
 class ItemGrobidJson(luigi.Task):
 
@@ -194,28 +202,33 @@ class ItemGrobidJson(luigi.Task):
 
         grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
         json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
-        shellout("mkdir -p {json_dir}", json_dir)
+        shellout("mkdir -p {json_dir}", json_dir=json_dir)
 
-        # XXX: GROBID JSON fulltext (for file in ...)
+        # Generate fulltext json (one file per PDF)
+        for tei_path in glob.glob(grobid_dir + "/*.tei.xml"):
+            json_path = tei_path.replace('/grobid_tei/', '/grobid_json/')\
+                                .replace('.tei.xml', '.json')
+            # jq in the pipeline validates JSON
+            shellout("""
+                bin/grobid2json.py {tei_path}
+                    | jq -c .
+                    > {json_path}""",
+                tei_path=tei_path,
+                json_path=json_path)
 
-        # Just the header info
-        # jq in the pipeline ensures valid JSON
-        shellout("""
+        # Just the header info (one json file for the whole item)
+        # jq in the pipeline validates JSON
+        output = shellout("""
             ls {grobid_dir}/*tei.xml
-                | parallel -j 4 bin/grobid2json.py --no-encumbered {}
-                | jq .
+                | parallel -j 4 bin/grobid2json.py --no-encumbered {{}}
+                | jq -c .
                 > {output}""",
-            grobid_dir=grobid_dir,
-            GROBID_JAR=GROBID_JAR,
-            GROBID_HOME=GROBID_HOME)
+            grobid_dir=grobid_dir)
+
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
         return luigi.LocalTarget('work/{}/{}/grobid_metadata.json'.format(self.crawl, self.item))
-
-
-# XXX: tarball things up
-# XXX: upload and cleanup (delete PDFs, WARCs)
 
 
 class ItemGrobidTarballs(luigi.Task):
@@ -229,7 +242,7 @@ class ItemGrobidTarballs(luigi.Task):
     def requires(self):
         return [(Executable(name='bin/grobid2json.py'),
                  Executable(name='jq')),
-                ItemGrobidExtract(crawl=self.crawl, item=self.item)]
+                ItemGrobidJson(crawl=self.crawl, item=self.item)]
 
     def run(self):
 
@@ -240,14 +253,15 @@ class ItemGrobidTarballs(luigi.Task):
         json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
 
         manifest_tmp = shellout("""
-            sha1sum {pdf_dir} {grobid_dir} {json_dir} {json_dir}/../grobid_metadata.json
+            sha1sum {pdf_dir}/*.pdf {grobid_dir}/*.tei.xml {json_dir}/*.json {base_dir}/grobid_metadata.json
                 > {output}""",
             pdf_dir=pdf_dir,
             grobid_dir=grobid_dir,
-            json_dir=json_dir)
+            json_dir=json_dir,
+            base_dir=base_dir)
 
-        shellout("tar czf {json_dir}.tar.gz {json_dir}", json_dir)
-        shellout("tar czf {grobid_dir}.tar.gz {grobid_dir}", grobid_dir)
+        shellout("tar czf {json_dir}.tar.gz {json_dir}", json_dir=json_dir)
+        shellout("tar czf {grobid_dir}.tar.gz {grobid_dir}", grobid_dir=grobid_dir)
 
         # Move the manifest file over
         luigi.LocalTarget(manifest_tmp).move(self.output().path)
@@ -260,7 +274,6 @@ class ItemGrobidUpload(luigi.Task):
 
     crawl = luigi.Parameter()
     item = luigi.Parameter()
-    cleanup = luigi.BoolParameter(default=False)
 
     # Don't keep trying over and over!
     retry_count = 1
@@ -278,7 +291,7 @@ class ItemGrobidUpload(luigi.Task):
             base_dir + "grobid_tei.tar.gz",
             base_dir + "grobid_json.tar.gz",
             base_dir + "grobid_metadata.json",
-            base_dir + "grobid.log",
+            base_dir + "grobid.timing",
             base_dir + "grobid.sha1sum",
         ]
 
@@ -287,22 +300,48 @@ class ItemGrobidUpload(luigi.Task):
             item=self.item,
             files=" ".join(upload_list))
 
-        if self.cleanup:
-            shellout("rm {json_dir}/*.json", json_dir)
-            shellout("rm {grobid_dir}/*.json", grobid_dir)
-            shellout("rm {base_dir}/*arg.gz", base_dir)
-
-        output = shellout("echo 'done > {output}")
+        output = shellout("echo done > {output}")
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
         return luigi.LocalTarget('work/{}/{}/uploaded.STAMP'.format(self.crawl, self.item))
 
 
+class ItemGrobidCleanup(luigi.Task):
+
+    crawl = luigi.Parameter()
+    item = luigi.Parameter()
+
+    # Don't keep trying over and over!
+    retry_count = 1
+
+    def requires(self):
+        return [ItemGrobidUpload(crawl=self.crawl, item=self.item)]
+
+    def run(self):
+
+        base_dir = "work/{}/{}/".format(self.crawl, self.item)
+        pdf_dir = "work/{}/{}/pdfs".format(self.crawl, self.item)
+        grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
+        json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
+
+        shellout("rm -f {json_dir}/*.json", json_dir=json_dir)
+        shellout("rm -f {grobid_dir}/*.json", grobid_dir=grobid_dir)
+        shellout("rm -f {base_dir}/*arc.gz", base_dir=base_dir)
+        shellout("rm -f {pdf_dir}/*pdf", pdf_dir=pdf_dir)
+
+        output = shellout("echo done > {output}")
+        luigi.LocalTarget(output).move(self.output().path)
+
+    def output(self):
+        return luigi.LocalTarget('work/{}/{}/cleanup.STAMP'.format(self.crawl, self.item))
+
+
 class ExtractCrawl(luigi.Task):
     """Reads CrawlItemsList, creates a ItemPdfExtract for each"""
 
     crawl = luigi.Parameter()
+    cleanup = luigi.BoolParameter(default=False)
 
     def requires(self):
         return CrawlItemsList(self.crawl)
@@ -313,10 +352,12 @@ class ExtractCrawl(luigi.Task):
         with todo_file.open() as handle:
             for row in handle:
                 row = row.strip()
-                all_jobs.append(
-                    ItemGrobidUpload(
-                        crawl=self.crawl,
-                        item=row))
+                if self.cleanup:
+                    all_jobs.append(
+                        ItemGrobidCleanup(crawl=self.crawl, item=row))
+                else:
+                    all_jobs.append(
+                        ItemGrobidUpload(crawl=self.crawl, item=row))
 
         yield all_jobs
 

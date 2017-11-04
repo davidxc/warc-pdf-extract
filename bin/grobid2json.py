@@ -59,7 +59,7 @@ def biblio_info(elem):
     ref['authors'] = all_authors(elem)
     ref['publisher'] = elem.findtext('.//{%s}publicationStmt/{%s}publisher' % (ns, ns))
     date = elem.find('.//{%s}date[@type="published"]' % ns)
-    ref['date'] = (date != None)  and date.attrib.get('when')
+    ref['date'] = (date != None) and date.attrib.get('when')
     ref['volume'] = elem.findtext('.//{%s}biblScope[@unit="volume"]' % ns)
     ref['issue'] = elem.findtext('.//{%s}biblScope[@unit="issue"]' % ns)
     el = elem.find('.//{%s}ptr[@target]' % ns)
@@ -99,13 +99,13 @@ def do_tei(path, encumbered=True):
 
     if encumbered:
         el = tei.find('.//{%s}profileDesc/{%s}abstract' % (ns, ns))
-        info['abstract'] = el and " ".join(el.itertext()).strip()
+        info['abstract'] = (el or None) and " ".join(el.itertext()).strip()
         el = tei.find('.//{%s}text/{%s}body' % (ns, ns))
-        info['body'] = el and " ".join(el.itertext()).strip()
+        info['body'] = (el or None) and " ".join(el.itertext()).strip()
         el = tei.find('.//{%s}back/{%s}div[@type="acknowledgement"]' % (ns, ns))
-        info['acknowledgement'] = el and " ".join(el.itertext()).strip()
+        info['acknowledgement'] = (el or None) and " ".join(el.itertext()).strip()
         el = tei.find('.//{%s}back/{%s}div[@type="annex"]' % (ns, ns))
-        info['annex'] = el and " ".join(el.itertext()).strip()
+        info['annex'] = (el or None) and " ".join(el.itertext()).strip()
 
     return info    
 
