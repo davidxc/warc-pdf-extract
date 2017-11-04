@@ -70,6 +70,8 @@ class TestConvert:
         assert_equals(ref19, extracted['citations'][19])
 
     def test_fulltext(self):
+        """Checks that the body and other fulltext fields are extracted (fuzzy match)"""
+
         extracted = do_tei(self.test_file)
 
         ack_snip = "The authors thank Zaiwen Wen for many useful discussions regarding the ADM"
@@ -79,3 +81,14 @@ class TestConvert:
         assert ack_snip in extracted['acknowledgement']
         assert abstract_snip in extracted['abstract']
         assert body_snip in extracted['body']
+
+    def test_excludes(self):
+        """Test that copyright-encumbered stuff gets added if encumbered=False"""
+
+        e = do_tei(self.test_file, encumbered=True)
+        no_e = do_tei(self.test_file, encumbered=False)
+        assert('title' in e.keys())
+        assert('title' in no_e.keys())
+        for field in 'body', 'acknowledgement', 'annex', 'abstract':
+            assert field in e.keys()
+            assert not field in no_e.keys()
