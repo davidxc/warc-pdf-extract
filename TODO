@@ -1,4 +1,7 @@
-- crawl-specific luigi process, based on warcsum
+- make item-level task non-local
+    => unified crawl metadata as separate download+cat task
+
+x crawl-specific luigi process, based on warcsum
     => download warcs
     => extract PDFs to directory
     => run grobid on directory
