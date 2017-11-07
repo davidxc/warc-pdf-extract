@@ -310,18 +310,16 @@ class ItemGrobidTarballs(luigi.Task):
 
     def run(self):
 
+        base_dir = "work/{}/{}".format(self.crawl, self.item)
         # NB: NO trailing slashes in the below
-        base_dir = "work/{}/{}/".format(self.crawl, self.item)
         pdf_dir = "work/{}/{}/pdfs".format(self.crawl, self.item)
         grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
         json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
 
         manifest_tmp = shellout("""
-            sha1sum {pdf_dir}/*.pdf {grobid_dir}/*.tei.xml {json_dir}/*.json {base_dir}/grobid_metadata.json
+            cd {base_dir}
+            && sha1sum pdfs/*.pdf grobid_tei/*.tei.xml grobid_json/*.json grobid_metadata.json
                 > {output}""",
-            pdf_dir=pdf_dir,
-            grobid_dir=grobid_dir,
-            json_dir=json_dir,
             base_dir=base_dir)
 
         shellout("tar czf {json_dir}.tar.gz {json_dir}", json_dir=json_dir)
