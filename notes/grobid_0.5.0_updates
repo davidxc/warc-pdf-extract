@@ -1,0 +1,35 @@
+
+
+
+$ http get http://localhost:8070/api/isalive
+    HTTP/1.1 200 OK
+    Content-Length: 4
+    Content-Type: text/plain
+    Date: Thu, 30 Nov 2017 02:51:49 GMT
+    Vary: Accept-Encoding
+
+    true
+
+$ http -f post http://localhost:8070/api/processFulltextDocument input@somefile.pdf
+    HTTP/1.1 200 OK
+    Content-Length: 6782
+    Content-Type: application/xml
+    Date: Thu, 30 Nov 2017 03:21:37 GMT
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <TEI xmlns="http://www.tei-c.org/ns/1.0" 
+    ...
+
+
+$ http -f post http://localhost:8070/api/processFulltextDocument input@notpdf.file
+    HTTP/1.1 400 Bad Request
+    Content-Length: 206
+    Content-Type: application/json
+    Date: Thu, 30 Nov 2017 03:22:50 GMT
+
+    {
+        "code": 400, 
+        "description": "org.grobid.core.exceptions.GrobidException:[BAD_INPUT_DATA] PDF to XML conversion failed with error code: 1", 
+        "requestUri": null, 
+        "type": "org.grobid.core.exceptions.GrobidException"
+    }

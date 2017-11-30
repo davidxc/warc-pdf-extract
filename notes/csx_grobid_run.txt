@@ -1,0 +1,36 @@
+
+bnewbold@ia601101$ ls CITESEERX-CRAWL-2017-06-20-20170705131631731-00459-00468-wbgrp-svc284/grobid_tei/*.tei.xml | wc -l
+8530
+
+
+bnewbold@ia601101$ cat CITESEERX-CRAWL-2017-06-20-20170705131631731-00459-00468-wbgrp-svc284/grobid.timing 
+        Command being timed: "java -Xmx6G -jar ./grobid-grobid-parent-0.4.4/grobid-core/target/grobid-core-0.4.4-SNAPSHOT.one-jar.jar -gH ./grobid-grobid-parent-0.4.4/grobid-home/ -dIn work/citeseerx_crawl_2017/CITESEERX-CRAWL-2017-06-20-20170705131631731-00459-00468-wbgrp-svc284/pdfs -r -dOut work/citeseerx_crawl_2017/CITESEERX-CRAWL-2017-06-20-20170705131631731-00459-00468-wbgrp-svc284/grobid_tei -exe processFullText"
+        User time (seconds): 58813.09
+        System time (seconds): 21432.25
+        Percent of CPU this job got: 71%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 31:12:04
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 7671468
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 87
+        Minor (reclaiming a frame) page faults: 978318409
+        Voluntary context switches: 4601827
+        Involuntary context switches: 7670267
+        Swaps: 0
+        File system inputs: 18220288
+        File system outputs: 361532136
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+
+Per PDF (full extraction):
+    6.89 sec user
+    2.51 sec system
+    13.17 sec wall time
+
+This is *way* over the estimated ~1 sec processing time on my laptop. Need to test on SSD...
