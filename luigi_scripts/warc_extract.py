@@ -13,6 +13,8 @@ from gluish.utils import shellout
 from gluish.format import TSV
 import requests
 
+from grobid_server import GrobidServer
+
 # TODO: proper config values somewhere?
 GROBID_JAR="./grobid-grobid-parent-0.4.4/grobid-core/target/grobid-core-0.4.4-SNAPSHOT.one-jar.jar"
 GROBID_HOME="./grobid-grobid-parent-0.4.4/grobid-home/"
@@ -196,7 +198,7 @@ class ItemGrobidJson(luigi.Task):
     def requires(self):
         return [(Executable(name='bin/grobid2json.py'),
                  Executable(name='jq')),
-                ItemGrobidExtract(crawl=self.crawl, item=self.item)]
+                ItemGrobidServiceExtract(crawl=self.crawl, item=self.item)]
 
     def run(self):
 

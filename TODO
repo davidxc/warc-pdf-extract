@@ -1,10 +1,11 @@
 - make item-level task non-local
     => unified crawl metadata as separate download+cat task
-
-x crawl-specific luigi process, based on warcsum
-    => download warcs
-    => extract PDFs to directory
-    => run grobid on directory
+- refactor crawl-specific luigi process
+    => download single warc
+    => iterate over contents
+        => if PDF, POST to grobid service
+        => write (.tei.xml) results to WARC-specific directory
+        => write a stamp when complete
     => zip up results and upload to petabox
 - seed-list-based luigi/hadoop process
     => chunk seedlist into item-sized chunks, then task-sized chunks
