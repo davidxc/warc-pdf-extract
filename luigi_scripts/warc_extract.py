@@ -204,7 +204,7 @@ class ItemGrobidServiceExtract(luigi.Task):
         warc_list = [l.strip() for l in open(input_manifest.path, 'r').readlines()]
         yield [WarcGrobidServiceExtract(self.crawl, self.item, w) for w in warc_list]
 
-        output = shellout("echo 'done > {output}")
+        output = shellout("echo 'done' > {output}")
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
@@ -241,7 +241,7 @@ class WarcGrobidServiceExtract(luigi.Task):
             grobid_server=grobid_server,
             warc_path=warc_path)
 
-        output = shellout("echo 'done > {output}")
+        output = shellout("echo 'done' > {output}")
         luigi.LocalTarget(output).move(self.output().path)
 
 
