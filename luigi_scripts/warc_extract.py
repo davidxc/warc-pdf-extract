@@ -187,6 +187,68 @@ class ItemGrobidExtract(luigi.Task):
     def output(self):
         return luigi.LocalTarget('work/{}/{}/grobid.timing'.format(self.crawl, self.item))
 
+class ItemGrobidServiceExtract(luigi.Task):
+
+    crawl = luigi.Parameter()
+    item = luigi.Parameter()
+
+    # Don't keep trying over and over!
+    retry_count = 1
+
+    def requires(self):
+        return [ItemWarcDownload(crawl=self.crawl, item=self.item)]
+
+    def run(self):
+        input_manifest = self.input()[0]
+
+        warc_list = [l.strip() for l in open(input_manifest.path, 'r').readlines()]
+        yield [WarcGrobidServiceExtract(self.crawl, self.item, w) for w in warc_list]
+
+        output = shellout("echo 'done > {output}")
+        luigi.LocalTarget(output).move(self.output().path)
+
+    def output(self):
+        return luigi.LocalTarget('work/{}/{}/grobid_service.STAMP'.format(self.crawl, self.item))
+
+
+class WarcGrobidServiceExtract(luigi.Task):
+
+    crawl = luigi.Parameter()
+    item = luigi.Parameter()
+    warc = luigi.Parameter()
+
+    # Don't keep trying over and over!
+    retry_count = 1
+
+    def requires(self):
+        return [GrobidServer(),
+                ItemWarcDownload(crawl=self.crawl, item=self.item)]
+
+    def run(self):
+
+        warc_path = "work/{}/{}/{}".format(self.crawl, self.item, self.warc)
+        grobid_server = "http://localhost:8070"
+        grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
+        shellout("mkdir -p {grobid_dir}", grobid_dir=grobid_dir)
+
+        shellout("""
+            bin/warc_pdf_grobid_client.py {grobid_dir} {warc_path}
+                --min-size 512
+                --max-size 268435456
+                --mimetype pdf
+                --grobid-server {grobid_server}""",
+            grobid_dir=grobid_dir,
+            grobid_server=grobid_server,
+            warc_path=warc_path)
+
+        output = shellout("echo 'done > {output}")
+        luigi.LocalTarget(output).move(self.output().path)
+
+
+    def output(self):
+        return luigi.LocalTarget('work/{}/{}/{}.grobid.STAMP'.format(self.crawl, self.item, self.warc))
+
+
 class ItemGrobidJson(luigi.Task):
 
     crawl = luigi.Parameter()
