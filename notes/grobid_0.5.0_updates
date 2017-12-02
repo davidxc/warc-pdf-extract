@@ -33,3 +33,16 @@ $ http -f post http://localhost:8070/api/processFulltextDocument input@notpdf.fi
         "requestUri": null, 
         "type": "org.grobid.core.exceptions.GrobidException"
     }
+
+=========
+
+running on aitio...
+
+    14 workers => ~60
+    16 workers => ~70 user, 5 sys CPU utilization
+    18 workers => ~65
+    20 workers => mostly same, except a bunch of waiting?
+
+seems like a lot of 500 errors. hrm.
+
+feels like it's only doing a handful of PDFs a second
