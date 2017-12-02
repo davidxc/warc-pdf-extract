@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This script takes a TSV file path (with upstream metadata:
+This script takes a TSV file path (with upstream metadata):
 
   <doi> <title> <authors> <year> <journal> <publisher> <subject> <type> <sha1>
 
