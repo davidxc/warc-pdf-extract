@@ -283,8 +283,9 @@ class ItemGrobidJson(luigi.Task):
         # Just the header info (one json file for the whole item)
         # jq in the pipeline validates JSON
         output = shellout("""
-            ls {grobid_dir}/*tei.xml
-                | parallel -j 4 bin/grobid2json.py --no-encumbered {{}}
+            cd {grobid_dir}
+            && ls ./*tei.xml
+                | parallel -j 4 ../../../../bin/grobid2json.py --no-encumbered {{}}
                 | jq -c .
                 > {output}""",
             grobid_dir=grobid_dir)
@@ -318,7 +319,8 @@ class ItemGrobidTarballs(luigi.Task):
 
         manifest_tmp = shellout("""
             cd {base_dir}
-            && sha1sum pdfs/*.pdf grobid_tei/*.tei.xml grobid_json/*.json grobid_metadata.json
+            && find . \( -path "./pdfs/*.pdf" -o -path "./grobid_tei/*.tei.xml" -o -path "./grobid_json/*.json" -o -path "./grobid_metadata.json" \)
+            | parallel -j3 sha1sum {{}}
                 > {output}""",
             base_dir=base_dir)
 
@@ -353,7 +355,7 @@ class ItemGrobidUpload(luigi.Task):
             base_dir + "grobid_tei.tar.gz",
             base_dir + "grobid_json.tar.gz",
             base_dir + "grobid_metadata.json",
-            base_dir + "grobid.timing",
+            #base_dir + "grobid.timing", # not in service extract
             base_dir + "grobid.sha1sum",
         ]
 
