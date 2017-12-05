@@ -284,7 +284,7 @@ class ItemGrobidJson(luigi.Task):
         # jq in the pipeline validates JSON
         output = shellout("""
             cd {grobid_dir}
-            && ls ./*tei.xml
+            && find . -name "*.tei.xml"
                 | parallel -j 4 ../../../../bin/grobid2json.py --no-encumbered {{}}
                 | jq -c .
                 > {output}""",
