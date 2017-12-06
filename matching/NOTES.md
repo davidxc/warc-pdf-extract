@@ -20,5 +20,10 @@ PLAN
     crossref
     this repo revision
 
+=============================
 
-    sqlite3 tokenized_crossref.sqlite < token_doi_schema.sql
+    mkdir -p test
+    rm -f test/tokenized_crossref.sqlite
+    ./tokenize_crossref_tsv.py test/crossref_examples.tsv  > test/tokenized_crossref.tsv
+    sqlite3 test/tokenized_crossref.sqlite < token_doi_schema.sql
+    sqlite3 test/tokenized_crossref.sqlite < test/import_test_data.sql
