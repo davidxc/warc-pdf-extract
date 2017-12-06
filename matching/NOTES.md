@@ -22,8 +22,16 @@ PLAN
 
 =============================
 
+Testing:
+
     mkdir -p test
     rm -f test/tokenized_crossref.sqlite
     ./tokenize_crossref_tsv.py test/crossref_examples.tsv  > test/tokenized_crossref.tsv
     sqlite3 test/tokenized_crossref.sqlite < token_doi_schema.sql
     sqlite3 test/tokenized_crossref.sqlite < test/import_test_data.sql
+
+"Production":
+
+    ./tokenize_crossref_tsv.py /fast/metadump/biblio/works_crossref.tsv | pv --line-mode -s 85000000 > tokenized_crossref.tsv
+    sqlite3 test/tokenized_crossref.sqlite < import_full_data.sql
+
