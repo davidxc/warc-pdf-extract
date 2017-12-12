@@ -56,7 +56,7 @@ def try_doi(db, obj):
     assert len(rows) <= 1, "DOI column should be unique"
     if len(rows) == 1:
         score = score_match(obj, rows[0])
-        if score > 0.9:
+        if score > 90:
             return (doi, 'grobid-crossref-exact_doi-{}'.format(score))
     else:
         return False
@@ -68,7 +68,7 @@ def try_title_author(db, obj):
     rows = db.execute('SELECT * from token_doi WHERE title_token=? LIMIT 20', (title_token, ))
     for row in rows:
         score = score_match(obj, row)
-        if score > 0.9:
+        if score > 90:
             doi = row[1].lower()
             return (doi, 'grobid-crossref-title_token-{}'.format(score))
     return False
