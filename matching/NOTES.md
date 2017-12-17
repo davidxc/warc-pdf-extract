@@ -33,5 +33,12 @@ Testing:
 "Production":
 
     ./tokenize_crossref_tsv.py /fast/metadump/biblio/works_crossref.tsv | pv --line-mode -s 85000000 > tokenized_crossref.tsv
-    sqlite3 test/tokenized_crossref.sqlite < import_full_data.sql
+    # or, in parallel:
+    parallel -j6 --bar --pipepart -a /fast/metadump/biblio/works_crossref.tsv ./tokenize_crossref_tsv.py > tokenized_crossref.tsv
 
+    sqlite3 tokenized_crossref.sqlite < token_doi_schema.sql
+    sqlite3 tokenized_crossref.sqlite < import_full_data.sql
+
+
+
+TODO: `tokenized_crossref.tsv:3294170: unescaped " character` (many of these)
