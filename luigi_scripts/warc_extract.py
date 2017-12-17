@@ -293,7 +293,7 @@ class ItemGrobidJson(luigi.Task):
         luigi.LocalTarget(output).move(self.output().path)
 
     def output(self):
-        return luigi.LocalTarget('work/{}/{}/grobid_metadata.json'.format(self.crawl, self.item))
+        return luigi.LocalTarget('work/{crawl}/{item}/{item}_grobid_metadata.json'.format(crawl=self.crawl, item=self.item))
 
 
 class ItemGrobidTarballs(luigi.Task):
@@ -312,26 +312,24 @@ class ItemGrobidTarballs(luigi.Task):
     def run(self):
 
         base_dir = "work/{}/{}".format(self.crawl, self.item)
-        # NB: NO trailing slashes in the below
-        pdf_dir = "work/{}/{}/pdfs".format(self.crawl, self.item)
-        grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
-        json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
 
         manifest_tmp = shellout("""
             cd {base_dir}
-            && find . \( -path "./pdfs/*.pdf" -o -path "./grobid_tei/*.tei.xml" -o -path "./grobid_json/*.json" -o -path "./grobid_metadata.json" \)
+            && find . \( -path "./pdfs/*.pdf" -o -path "./grobid_tei/*.tei.xml" -o -path "./grobid_json/*.json" -o -path "./*grobid_metadata.json" \)
             | parallel -j3 sha1sum {{}}
                 > {output}""",
             base_dir=base_dir)
 
-        shellout("tar czf {json_dir}.tar.gz {json_dir}", json_dir=json_dir)
-        shellout("tar czf {grobid_dir}.tar.gz {grobid_dir}", grobid_dir=grobid_dir)
+        shellout("tar czf -C {base_dir} {item}_grobid_json.tar.gz grobid_json", base_dir=base_dir, item=self.item)
+        shellout("tar czf -C {base_dir} {item}_grobid_tei.tar.gz grobid_tei", base_dir=base_dir, item=self.item)
+        shellout("gzip --keep {base_dir}/{item}_grobid_metadata.json", base_dir=base_dir, item=self.item)
 
         # Move the manifest file over
         luigi.LocalTarget(manifest_tmp).move(self.output().path)
 
     def output(self):
-        return luigi.LocalTarget('work/{}/{}/grobid.sha1sum'.format(self.crawl, self.item))
+        return luigi.LocalTarget('work/{crawl}/{item}/{item}_grobid.sha1sum'.format(
+            crawl=self.crawl, item=self.item))
 
 
 class ItemGrobidUpload(luigi.Task):
@@ -352,11 +350,11 @@ class ItemGrobidUpload(luigi.Task):
         base_dir = "work/{}/{}/".format(self.crawl, self.item)
 
         upload_list = [
-            base_dir + "grobid_tei.tar.gz",
-            base_dir + "grobid_json.tar.gz",
-            base_dir + "grobid_metadata.json",
-            #base_dir + "grobid.timing", # not in service extract
-            base_dir + "grobid.sha1sum",
+            base_dir + "{}_grobid_tei.tar.gz".format(self.item),
+            base_dir + "{}_grobid_json.tar.gz".format(self.item),
+            base_dir + "{}_grobid_metadata.json.gz".format(self.item),
+            base_dir + "{}_grobid.sha1sum".format(self.item),
+            #base_dir + "{}_grobid.timing".format(self.item), # not in service extract
         ]
 
         # upload result to item
@@ -390,7 +388,7 @@ class ItemGrobidCleanup(luigi.Task):
         json_dir = "work/{}/{}/grobid_json".format(self.crawl, self.item)
 
         shellout("rm -f {json_dir}/*.json", json_dir=json_dir)
-        shellout("rm -f {grobid_dir}/*.json", grobid_dir=grobid_dir)
+        shellout("rm -f {grobid_dir}/*.xml", grobid_dir=grobid_dir)
         shellout("rm -f {base_dir}/*arc.gz", base_dir=base_dir)
         shellout("rm -f {pdf_dir}/*pdf", pdf_dir=pdf_dir)
 
