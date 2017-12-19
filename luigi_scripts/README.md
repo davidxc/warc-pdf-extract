@@ -21,11 +21,12 @@ Requires:
 - `time` (GNU program, not the bash builtin)
 - `ia-mine` tool
 - `ia` python library (and appropriate upload credentials)
+- `warcat` python library
 
 Run:
 
     sudo apt install unzip time python3-pip python3-setuptools python3-wheel jq
-    sudo pip3 install luigi gluish iamine
+    sudo pip3 install luigi gluish iamine warcat
 
 Have switched to GROBID 0.5.x. To download and build:
 
