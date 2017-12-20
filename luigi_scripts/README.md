@@ -25,7 +25,7 @@ Requires:
 
 Run:
 
-    sudo apt install unzip time python3-pip python3-setuptools python3-wheel jq
+    sudo apt install unzip time python3-pip python3-setuptools python3-wheel jq python3-requests
     sudo pip3 install luigi gluish iamine warcat
 
 Have switched to GROBID 0.5.x. To download and build:
