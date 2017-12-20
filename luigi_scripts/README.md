@@ -57,6 +57,11 @@ Then, run Luigi from this directory, three workers, local scheduling:
 
     PYTHONPATH='luigi_scripts' luigi --module warc_extract ExtractCrawl --crawl citeseerx_crawl_2017 --workers 3
 
+To use the central scheduler (configured in `./luigi.cfg`), and "cleanup" after
+each crawl:
+
+    PYTHONPATH='luigi_scripts' luigi --module warc_extract ExtractCrawl --crawl citeseerx_crawl_2017 --workers 3 --cleanup
+
 In actual use you'll probably want more workers, and maybe even distributed
 scheduling (multiple machines, one collection or set of items each).
 
