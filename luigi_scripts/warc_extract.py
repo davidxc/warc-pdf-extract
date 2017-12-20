@@ -320,8 +320,8 @@ class ItemGrobidTarballs(luigi.Task):
                 > {output}""",
             base_dir=base_dir)
 
-        shellout("tar -C {base_dir} -czf {item}_grobid_json.tar.gz grobid_json", base_dir=base_dir, item=self.item)
-        shellout("tar -C {base_dir} -czf {item}_grobid_tei.tar.gz grobid_tei", base_dir=base_dir, item=self.item)
+        shellout("tar -C {base_dir} -czf work/{crawl}/{item}/{item}_grobid_json.tar.gz grobid_json", base_dir=base_dir, item=self.item, crawl=self.crawl)
+        shellout("tar -C {base_dir} -czf work/{crawl}/{item}/{item}_grobid_tei.tar.gz grobid_tei", base_dir=base_dir, item=self.item, crawl=self.crawl)
         shellout("gzip --keep {base_dir}/{item}_grobid_metadata.json", base_dir=base_dir, item=self.item)
 
         # Move the manifest file over
