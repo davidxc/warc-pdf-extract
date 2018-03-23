@@ -13,6 +13,11 @@ Grab and re-upload sample set:
     gohdfs head -n 100001 pdfs/gobal-20170412234601-pdfs-prefixed/part-00000 | cut -f2- -d' ' | tail -n+2 > 100k_random_gwb_pdf.cdx
     gohdfs put 100k_random_gwb_pdf.cdx 100k_random_gwb_pdf.cdx
 
+Actually:
+
+    gohdfs get pdfs/gwb-pdf-20171108183635-oadoi-doi/part-r-00000
+    sort -R part-r-00000 | head -n 200000 > 200k_random_oadoi_pdfs.cdx
+
 From the cluster:
 
     $HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/../hadoop-mapreduce/hadoop-streaming.jar \
