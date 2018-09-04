@@ -221,13 +221,13 @@ class WarcGrobidServiceExtract(luigi.Task):
     retry_count = 1
 
     def requires(self):
-        return [GrobidServer(),
+        return [GrobidServer(host_port="http://wbgrp-svc096.us.archive.org:8070"),
                 ItemWarcDownload(crawl=self.crawl, item=self.item)]
 
     def run(self):
 
         warc_path = "work/{}/{}/{}".format(self.crawl, self.item, self.warc)
-        grobid_server = "http://localhost:8070"
+        grobid_server = "http://wbgrp-svc096.us.archive.org:8070"
         grobid_dir = "work/{}/{}/grobid_tei".format(self.crawl, self.item)
         shellout("mkdir -p {grobid_dir}", grobid_dir=grobid_dir)
 
